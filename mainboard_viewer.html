@@ -207,13 +207,13 @@
         controls.dampingFactor = 0.05;
         controls.enablePan = true;
         controls.minDistance = 1;
-        controls.maxDistance = 200; 
-        controls.enableRotate = true; t
-        controls.rotateSpeed = 0.8; // Anpassbare Rotationsgeschwindigkeit
-        controls.maxPolarAngle = Math.PI; // Volle Rotation 
-        controls.minPolarAngle = 0; // Volle Rotation 
+        controls.maxDistance = 200;
+        controls.enableRotate = true; // Fehler: "t" entfernt
+        controls.rotateSpeed = 0.8;
+        controls.maxPolarAngle = Math.PI;
+        controls.minPolarAngle = 0;
 
-        // Alle Hotspots 
+        // Hotspot-Daten
         const hotspotsData = [
             { 
                 name: "8-Pin CPU Power", 
@@ -233,72 +233,72 @@
             { 
                 name: "BIOS Battery", 
                 objectNames: ["BIOSBattery1", "BIOSBattery2"], 
-                info: "Dies ist die CMOS-Batterie (CR2032-Knopfzelle). Sie speichert BIOS/UEFI-Einstellungen wie Boot-Reihenfolge und Hardware-Konfiguration, hält die Systemuhr aktiv, auch wenn der PC ausgeschaltet ist, und verhindert Datenverlust bei Stromausfall für BIOS-Einstellungen. Die Batterie hält typischerweise mehrere Jahre." 
+                info: "Dies ist die CMOS-Batterie (CR2032-Knopfzelle). Sie speichert BIOS/UEFI-Einstellungen, hält die Systemuhr aktiv und verhindert Datenverlust bei Stromausfall." 
             },
             { 
                 name: "Chipsatz", 
                 objectNames: ["Chipset1", "Chipset2"], 
-                info: "Dies ist der Chipsatz des Mainboards. Er steuert die Kommunikation zwischen CPU, RAM und Peripheriegeräten und verwaltet die PCIe-Lanes. Moderne Chipsätze wie AMD X570/B550 oder Intel Z790/B660 bestimmen, welche Technologien (PCIe 4.0/5.0, DDR4/DDR5) unterstützt werden. Früher war der Chipsatz in Northbridge und Southbridge aufgeteilt." 
+                info: "Dies ist der Chipsatz des Mainboards. Er steuert die Kommunikation zwischen CPU, RAM und Peripheriegeräten und verwaltet die PCIe-Lanes." 
             },
             { 
                 name: "DIMM Slots / RAM", 
                 objectNames: ["DIMM"], 
-                info: "Dies sind die DIMM-Slots für RAM-Module. Moderne Mainboards unterstützen je nach Chipsatz DDR4 oder DDR5 RAM. Die Anzahl der Slots variiert je nach Mainboard-Typ (meist 2-4 auf Consumer-Boards, mehr auf High-End- oder Server-Boards)." 
+                info: "Dies sind die DIMM-Slots für RAM-Module. Moderne Mainboards unterstützen DDR4 oder DDR5, je nach Chipsatz." 
             },
             { 
                 name: "Fan Headers", 
                 objectNames: ["FanHeadersTest1"], 
-                info: "Dies sind die Anschlüsse für Gehäuselüfter und CPU-Lüfter. Sie ermöglichen die Steuerung der Lüftergeschwindigkeit durch das BIOS/UEFI. Mainboards von ASUS, MSI und GIGABYTE bieten oft spezielle Lüftersteuerungssoftware für präzisere Kontrolle." 
+                info: "Dies sind die Anschlüsse für Gehäuselüfter und CPU-Lüfter. Sie ermöglichen die Steuerung der Lüftergeschwindigkeit durch das BIOS/UEFI." 
             },
             { 
                 name: "Front Connectors", 
                 objectNames: ["Front1", "Front2"], 
-                info: "Hier werden die Anschlüsse des Gehäusefrontpanels angeschlossen (Power-Button, Reset-Button, HDD-LEDs, USB, Audio). Die Pinbelegung variiert je nach Hersteller, daher ist es wichtig, das Mainboard-Handbuch zu konsultieren." 
+                info: "Hier werden die Anschlüsse des Gehäusefrontpanels angeschlossen (Power-Button, Reset-Button, USB, Audio)." 
             },
             { 
                 name: "M.2 Slot", 
-                objectNames: ["M2Pins", "M2Slot","M2Standoff1","M2Standoff2"], 
-                info: "Dies ist ein M.2-Steckplatz für schnelle SSDs. Er unterstützt NVMe- und SATA-SSDs. NVMe-SSDs nutzen PCIe-Lanes und bieten deutlich höhere Geschwindigkeiten als SATA. Moderne Chipsätze wie AMD X570 oder Intel Z790 bieten PCIe 4.0/5.0 M.2-Slots mit Geschwindigkeiten bis zu 14 GB/s." 
+                objectNames: ["M2Pins", "M2Slot", "M2Standoff1", "M2Standoff2"], 
+                info: "Dies ist ein M.2-Steckplatz für schnelle SSDs, der NVMe- und SATA-SSDs unterstützt." 
             },
             { 
                 name: "PCIe 1x", 
                 objectNames: ["PCIE11"], 
-                info: "Dies sind PCIe-x1-Steckplätze für Erweiterungskarten. Sie bieten eine geringere Bandbreite als die größeren PCIe-Slots und werden typischerweise für Netzwerkkarten, Sound-Karten oder kleinere Erweiterungen verwendet. PCIe (Peripheral Component Interconnect Express) ist eine Hochgeschwindigkeits-Schnittstelle für Kommunikation zwischen Mainboard und Erweiterungskarten." 
+                info: "Dies sind PCIe-x1-Steckplätze für Erweiterungskarten mit geringerer Bandbreite." 
             },
             { 
                 name: "PCIe Slot 2", 
                 objectNames: ["PCIESlot3", "PCIESlot2", "PCIESlot1"], 
-                info: "Dies ist ein PCIe-x16-Steckplatz. Er wird typischerweise für Grafikkarten oder andere Erweiterungskarten mit hoher Bandbreite verwendet. PCIe 4.0/5.0 x16-Slots bieten massive Bandbreite für modernste Grafikkarten. Die genaue Anzahl der elektrisch angebundenen Lanes kann je nach CPU und Chipsatz variieren." 
+                info: "Dies ist ein PCIe-x16-Steckplatz, typischerweise für Grafikkarten verwendet." 
             },
             { 
                 name: "PCIe Slot 3", 
                 objectNames: ["PCIESlot3"], 
-                info: "Dies ist ein weiterer PCIe-x16-Steckplatz für Grafikkarten oder andere Erweiterungskarten mit hoher Bandbreite. Bei Multi-GPU-Setups verteilen sich die PCIe-Lanes der CPU auf mehrere Slots. Je nach Chipsatz kann dieser Slot mit voller x16-Geschwindigkeit oder reduzierter Geschwindigkeit (x8/x4) laufen." 
+                info: "Dies ist ein weiterer PCIe-x16-Steckplatz für Grafikkarten oder Erweiterungskarten." 
             },
             { 
                 name: "RGB Header", 
                 objectNames: ["RGBHeader"], 
-                info: "Dies ist ein Anschluss für RGB-Beleuchtung. Hier können Sie RGB-Lüfter, -Streifen oder andere Beleuchtungselemente anschließen. Mainboard-Hersteller wie ASUS (Aura Sync), MSI (Mystic Light) und GIGABYTE (RGB Fusion) haben eigene RGB-Steuerungssoftware." 
+                info: "Dies ist ein Anschluss für RGB-Beleuchtung. Hier können RGB-Lüfter oder -Streifen angeschlossen werden." 
             },
             { 
                 name: "SATA Anschlüsse", 
                 objectNames: ["SATA"], 
-                info: "Dies sind SATA-Anschlüsse für Festplatten und SSDs. Sie bieten eine geringere Bandbreite (bis zu 600 MB/s) als M.2-NVMe-SSDs. Die Anzahl der SATA-Ports variiert je nach Chipsatz, wobei einige Ports deaktiviert werden können, wenn bestimmte M.2-Slots verwendet werden." 
+                info: "Dies sind SATA-Anschlüsse für Festplatten und SSDs, mit einer maximalen Geschwindigkeit von bis zu 600 MB/s." 
             },
             { 
                 name: "I/O Inputs", 
                 objectNames: ["IO"], 
-                info: "Dies ist das I/O-Panel. Hier befinden sich die Anschlüsse für externe Geräte wie USB, Audio, Netzwerk, DisplayPort, HDMI und andere. Die genaue Ausstattung variiert je nach Mainboard-Modell und Preisklasse." 
+                info: "Dies ist das I/O-Panel für externe Geräte (USB, Audio, Netzwerk, etc.)." 
             },
             { 
                 name: "Interner USB Anschluss", 
                 objectNames: ["USBRNG"], 
-                info: "Dies ist ein interner USB-Anschluss. Er wird oft für Front-Panel-USB-Anschlüsse des Gehäuses oder interne USB-Geräte verwendet. Neuere Mainboards bieten auch interne USB-C-Header für Front-Panel-USB-C-Anschlüsse." 
+                info: "Dies ist ein interner USB-Anschluss, oft für Front-Panel-USB-Anschlüsse verwendet." 
             },
             { 
                 name: "VRM", 
                 objectNames: ["VRMDing"], 
-                info: "Dies ist der VRM (Voltage Regulator Module) Bereich. Er wandelt die Spannung für die CPU herunter und stellt eine stabile Stromversorgung sicher. Besonders wichtig für Übertaktung und Systemstabilität. High-End-Mainboards von ASUS, MSI und GIGABYTE haben oft robustere VRM-Designs mit mehr Phasen für bessere Stabilität bei Übertaktung." 
+                info: "Dies ist der VRM-Bereich. Er wandelt die Spannung für die CPU um und stellt eine stabile Stromversorgung sicher." 
             }
         ];
 
@@ -337,14 +337,11 @@
                 const maxDim = Math.max(mainboardSize.x, mainboardSize.y, mainboardSize.z);
                 const fov = camera.fov * (Math.PI / 180);
                 let cameraZ = Math.abs(maxDim / (2 * Math.tan(fov / 2)));
-                
-                // Weiter herausgezoomte Kameraposition beim Start
-                cameraZ *= 1.8; // Erhöhter Faktor für mehr Überblick
+                cameraZ *= 1.8;
                 
                 console.log("Mainboard Center:", mainboardCenter);
                 console.log("Camera Z Position:", cameraZ);
 
-                // Kameraposition für bessere Gesamtübersicht
                 camera.position.set(0, 2, cameraZ);
                 camera.lookAt(0, 0, 0);
                 controls.target.set(0, 0, 0);
@@ -369,7 +366,6 @@
             const sidebarList = document.querySelector('#sidebar ul');
             sidebarList.innerHTML = '';
             
-            // Sortiere die Hotspots alphabetisch für bessere Navigation
             const sortedHotspots = [...hotspotsData].sort((a, b) => a.name.localeCompare(b.name));
             
             sortedHotspots.forEach(hotspotData => {
@@ -445,10 +441,9 @@
                         console.log(`[DEBUG] Container-Objekt "${objectName}" gefunden (Typ: ${containerObject.type}). Mesh-Kind gefunden (Typ: ${meshObject.type}) mit Material:`, meshObject.material);
 
                         if (highlight) {
-                            // Hier wird die Highlight-Farbe gesetzt
                             meshObject.userData.originalColor = meshObject.material.color.clone();
-                            meshObject.material.color.set(0xFFD700); // Neue Farbe: Gelb Test 
-                            console.log(`[HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf HELLBLAU gesetzt!`);
+                            meshObject.material.color.set(0xFFD700);
+                            console.log(`[HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf Gelb gesetzt!`);
                         } else {
                             if (meshObject.userData.originalColor) {
                                 meshObject.material.color.copy(meshObject.userData.originalColor);
