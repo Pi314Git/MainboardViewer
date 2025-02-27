@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Interaktives Mainboard 3D Ansicht</title>
+    <style>
+      body { 
+        margin: 0; 
+        overflow: hidden; 
+        font-family: Arial, sans-serif;
+      }
+      
+      #info-panel {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        max-width: 300px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      
+      #info-title {
+        margin-top: 0;
+        color: #4fc3f7;
+        font-size: 18px;
+        margin-bottom: 8px;
+      }
+      
+      #info-description {
+        font-size: 14px;
+        line-height: 1.4;
+      }
+      
+      #back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: none;
+        font-size: 14px;
+      }
+      
+      #back-button:hover {
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <div id="info-panel">
+      <h3 id="info-title">Komponententitel</h3>
+      <p id="info-description">Beschreibung der Komponente wird hier angezeigt.</p>
+    </div>
+    <button id="back-button">Zurück zur Übersicht</button>
+    
+    <script type="module">
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js';
+      import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/controls/OrbitControls.js';
+      import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/loaders/GLTFLoader.js';
+      
+      // Grundlegende Einrichtung
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+      
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      
+      // Dunklerer Hintergrund (dunkelgrau/anthrazit)
+      scene.background = new THREE.Color(0x2a2a2a);
+      
+      // Bessere Beleuchtung für dunklere Objekte
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+      scene.add(ambientLight);
+      
+      const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight1.position.set(1, 1, 1);
+      scene.add(directionalLight1);
+      
+      const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight2.position.set(-1, 1, -1);
+      scene.add(directionalLight2);
+      
+      // Kamerasteuerung
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      
+      // DOM-Elemente
+      const infoPanel = document.getElementById('info-panel');
+      const infoTitle = document.getElementById('info-title');
+      const infoDescription = document.getElementById('info-description');
+      const backButton = document.getElementById('back-button');
+      
+      // Ursprüngliche Kameraposition speichern
+      let originalCameraPosition = new THREE.Vector3();
+      let originalControlsTarget = new THREE.Vector3();
+      
+      // Hotspots für das Mainboard
+      const hotspots = [
+        {
+          id: 'cpu',
+          title: 'CPU-Sockel',
+          description: 'Der CPU-Sockel ist die Halterung für den Prozessor. Dieses Mainboard verwendet einen LGA1700 Sockel, der mit Intel-Prozessoren der 12. und 13. Generation kompatibel ist.',
+          position: new THREE.Vector3(0, 0.1, 0.2), // Diese Positionen müssen an Ihr Modell angepasst werden
+          color: 0x4fc3f7,
+          zoom: 3
+        },
+        {
+          id: 'ram',
+          title: 'RAM-Steckplätze',
+          description: 'DDR5-RAM-Steckplätze für den Arbeitsspeicher. Dieses Mainboard unterstützt bis zu 128GB RAM mit Geschwindigkeiten bis zu 6400MHz.',
+          position: new THREE.Vector3(0.3, 0.1, 0.1),
+          color: 0xf44336,
+          zoom: 2.5
+        },
+        {
+          id: 'pcie',
+          title: 'PCIe-Steckplätze',
+          description: 'PCIe-Slots für Erweiterungskarten wie Grafikkarten, Netzwerkkarten oder SSDs. Der primäre Slot unterstützt PCIe 5.0 x16.',
+          position: new THREE.Vector3(0.2, 0.1, -0.2),
+          color: 0x4caf50,
+          zoom: 2.2
+        },
+        {
+          id: 'io',
+          title: 'I/O-Anschlüsse',
+          description: 'Externe Anschlüsse für USB, Audio, Netzwerk, HDMI und DisplayPort. Bietet USB 3.2 Gen 2, Thunderbolt 4 und 2.5G Ethernet.',
+          position: new THREE.Vector3(-0.3, 0.1, 0.2),
+          color: 0xff9800,
+          zoom: 2
+        },
+        {
+          id: 'cmos',
+          title: 'CMOS-Batterie',
+          description: 'Die CMOS-Batterie versorgt die BIOS-Einstellungen und die Echtzeituhr mit Strom, wenn der PC ausgeschaltet ist. Hält typischerweise 2-5 Jahre.',
+          position: new THREE.Vector3(-0.2, 0.1, -0.1),
+          color: 0xe91e63,
+          zoom: 2.5
+        },
+        {
+          id: 'm2',
+          title: 'M.2-Anschlüsse',
+          description: 'M.2-Slots für NVMe-SSDs mit PCIe 4.0 Unterstützung. Bietet Geschwindigkeiten bis zu 7000MB/s für ultraschnellen Datenzugriff.',
+          position: new THREE.Vector3(0, 0.1, -0.1),
+          color: 0x9c27b0,
+          zoom: 2.8
+        },
+        {
+          id: 'sata',
+          title: 'SATA-Anschlüsse',
+          description: 'SATA-Ports für traditionelle Festplatten und SSDs. Unterstützt SATA III mit 6Gb/s Übertragungsrate.',
+          position: new THREE.Vector3(0.3, 0.1, -0.1),
+          color: 0x795548,
+          zoom: 2.3
+        }
+      ];
+      
+      // Hotspot-Sprites erstellen
+      const hotspotObjects = [];
+      
+      function createHotspots() {
+        hotspots.forEach(hotspot => {
+          // Erstelle einen Kreis für den Hotspot
+          const geometry = new THREE.SphereGeometry(0.02, 16, 16);
+          const material = new THREE.MeshBasicMaterial({ 
+            color: hotspot.color,
+            transparent: true,
+            opacity: 0.8
+          });
+          
+          const sprite = new THREE.Mesh(geometry, material);
+          sprite.position.copy(hotspot.position);
+          
+          // Pulsieren-Animation
+          sprite.userData = {
+            originalScale: sprite.scale.clone(),
+            hotspotData: hotspot,
+            pulseFactor: 1,
+            pulseDirection: 0.01
+          };
+          
+          hotspotObjects.push(sprite);
+          scene.add(sprite);
+        });
+      }
+      
+      // Interaktion mit Hotspots
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      
+      function onMouseClick(event) {
+        // Mausposition normalisieren (-1 bis +1)
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        
+        // Raycaster mit Kamera und Mausposition aktualisieren
+        raycaster.setFromCamera(mouse, camera);
+        
+        // Prüfen, ob ein Hotspot getroffen wurde
+        const intersects = raycaster.intersectObjects(hotspotObjects);
+        
+        if (intersects.length > 0) {
+          const selectedHotspot = intersects[0].object;
+          const hotspotData = selectedHotspot.userData.hotspotData;
+          
+          // Speichere aktuelle Kameraposition
+          if (originalCameraPosition.length() === 0) {
+            originalCameraPosition.copy(camera.position);
+            originalControlsTarget.copy(controls.target);
+          }
+          
+          // Zeige Infos an
+          infoTitle.textContent = hotspotData.title;
+          infoDescription.textContent = hotspotData.description;
+          infoPanel.style.opacity = '1';
+          
+          // Zeige Zurück-Button an
+          backButton.style.display = 'block';
+          
+          // Animierte Kamerabewegung zum Hotspot
+          animateCameraToPosition(
+            hotspotData.position,
+            hotspotData.zoom
+          );
+        }
+      }
+      
+      // Animierte Kamerabewegung
+      function animateCameraToPosition(targetPosition, zoomLevel) {
+        // Deaktiviere Steuerung während der Animation
+        controls.enabled = false;
+        
+        // Neue Kameraposition berechnen (Offset vom Ziel)
+        const cameraOffset = new THREE.Vector3().subVectors(camera.position, controls.target);
+        cameraOffset.normalize().multiplyScalar(1 / zoomLevel); // Näher dran für größeren Zoom
+        
+        const newCameraPosition = new THREE.Vector3().addVectors(targetPosition, cameraOffset);
+        
+        // Animation starten
+        let startPosition = camera.position.clone();
+        let startTarget = controls.target.clone();
+        let startTime = Date.now();
+        let duration = 1000; // 1 Sekunde
+        
+        function animateCamera() {
+          let now = Date.now();
+          let elapsed = now - startTime;
+          let progress = Math.min(elapsed / duration, 1);
+          
+          // Easing-Funktion für weichere Animation
+          progress = ease(progress);
+          
+          // Kameraposition und Ziel interpolieren
+          camera.position.lerpVectors(startPosition, newCameraPosition, progress);
+          controls.target.lerpVectors(startTarget, targetPosition, progress);
+          controls.update();
+          
+          if (progress < 1) {
+            requestAnimationFrame(animateCamera);
+          } else {
+            // Animation abgeschlossen, Steuerung wieder aktivieren
+            controls.enabled = true;
+          }
+        }
+        
+        // Easing-Funktion
+        function ease(t) {
+          return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        }
+        
+        animateCamera();
+      }
+      
+      // Zurück zur Übersicht
+      backButton.addEventListener('click', () => {
+        // Nur zurückgehen, wenn eine Originalposition gespeichert ist
+        if (originalCameraPosition.length() > 0) {
+          // Animierte Kamerabewegung zurück
+          let startPosition = camera.position.clone();
+          let startTarget = controls.target.clone();
+          let startTime = Date.now();
+          let duration = 1000; // 1 Sekunde
+          
+          function animateBackToOverview() {
+            let now = Date.now();
+            let elapsed = now - startTime;
+            let progress = Math.min(elapsed / duration, 1);
+            
+            // Easing-Funktion für weichere Animation
+            progress = ease(progress);
+            
+            // Kameraposition und Ziel interpolieren
+            camera.position.lerpVectors(startPosition, originalCameraPosition, progress);
+            controls.target.lerpVectors(startTarget, originalControlsTarget, progress);
+            controls.update();
+            
+            if (progress < 1) {
+              requestAnimationFrame(animateBackToOverview);
+            } else {
+              // Animation abgeschlossen, Steuerung wieder aktivieren
+              controls.enabled = true;
+              
+              // Reset
+              originalCameraPosition.set(0, 0, 0);
+              originalControlsTarget.set(0, 0, 0);
+            }
+          }
+          
+          // Easing-Funktion
+          function ease(t) {
+            return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+          }
+          
+          // Deaktiviere Steuerung während der Animation
+          controls.enabled = false;
+          
+          animateBackToOverview();
+          
+          // Info-Panel und Button ausblenden
+          infoPanel.style.opacity = '0';
+          backButton.style.display = 'none';
+        }
+      });
+      
+      // Event Listener registrieren
+      window.addEventListener('click', onMouseClick);
+      
+      // 3D-Modell laden
+      const loader = new GLTFLoader();
+      loader.load(
+        'scene.gltf', 
+        function(gltf) {
+          scene.add(gltf.scene);
+          
+          // Automatische Größenanpassung und Zentrierung
+          const box = new THREE.Box3().setFromObject(gltf.scene);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          
+          // Positioniere das Modell im Mittelpunkt
+          gltf.scene.position.x = -center.x;
+          gltf.scene.position.y = -center.y;
+          gltf.scene.position.z = -center.z;
+          
+          // Positioniere die Kamera
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const fov = camera.fov * (Math.PI / 180);
+          let cameraZ = Math.abs(maxDim / (2 * Math.tan(fov / 2)));
+          cameraZ *= 1.2;
+          
+          camera.position.set(0, 0, cameraZ);
+          camera.lookAt(0, 0, 0);
+          
+          // Setze das Steuerungsziel
+          controls.target.set(0, 0, 0);
+          controls.update();
+          
+          // Erstelle Hotspots nachdem das Modell geladen ist
+          createHotspots();
+        },
+        function(xhr) {
+          console.log((xhr.loaded / xhr.total * 100) + '% geladen');
+        },
+        function(error) {
+          console.error('Ein Fehler ist beim Laden des Modells aufgetreten', error);
+        }
+      );
+      
+      // Animation
+      function animate() {
+        requestAnimationFrame(animate);
+        
+        // Pulsieren der Hotspots
+        hotspotObjects.forEach(hotspot => {
+          const userData = hotspot.userData;
+          userData.pulseFactor += userData.pulseDirection;
+          
+          // Richtung ändern, wenn Grenzwerte erreicht sind
+          if (userData.pulseFactor > 1.2) {
+            userData.pulseDirection = -0.01;
+          } else if (userData.pulseFactor < 0.8) {
+            userData.pulseDirection = 0.01;
+          }
+          
+          // Skalierung aktualisieren
+          const scale = userData.originalScale.clone().multiplyScalar(userData.pulseFactor);
+          hotspot.scale.copy(scale);
+        });
+        
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+      
+      // Anpassung bei Größenänderung des Fensters
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+  </body>
+</html>

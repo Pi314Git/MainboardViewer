@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Mainboard 3D Ansicht</title>
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background-color: #2a2a2a;
+        }
+        
+        /* Moderne Info-Box */
+        #info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.95));
+            color: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 300px;
+            z-index: 1000;
+            overflow: hidden;
+            height: auto;
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            visibility: hidden;
+        }
+        
+        #info.open {
+            max-height: 500px;
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+        
+        #info-content {
+            padding-top: 10px;
+            line-height: 1.6;
+        }
+        
+        #close-button {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 1.2em;
+            transition: color 0.2s;
+        }
+        
+        #close-button:hover {
+            color: white;
+        }
+        
+        /* Moderne Sidebar */
+        #sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(35, 35, 35, 0.95), rgba(25, 25, 25, 0.95));
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 1001;
+            overflow-y: auto;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        #sidebar h3 {
+            color: #fff;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #sidebar li {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+            color: #fff;
+        }
+        
+        #sidebar li:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left: 3px solid rgba(255, 165, 0, 0.6);
+            transform: translateX(3px);
+        }
+        
+        #sidebar li.active {
+            background: linear-gradient(90deg, rgba(255, 165, 0, 0.8), rgba(255, 140, 0, 0.6));
+            color: #fff;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(255, 165, 0, 0.3);
+            border-left: 3px solid #ff8c00;
+        }
+
+        #home-button {
+            padding: 12px;
+            background: linear-gradient(90deg, rgba(70, 70, 70, 0.7), rgba(50, 50, 50, 0.7));
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 15px;
+            color: #f0f0f0;
+            transition: all 0.2s;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #home-button:hover {
+            background: linear-gradient(90deg, rgba(80, 80, 80, 0.8), rgba(60, 60, 60, 0.8));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Scrollbar für Sidebar */
+        #sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        #sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        #sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .hotspot {
+            display: none;
+        }
+        
+        #overlay {
+            display: none;
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="info">
+      <div id="close-button">&#10006;</div>
+      <div id="info-content"></div>
+    </div>
+    <div id="sidebar">
+        <h3>Mainboard-Komponenten</h3>
+        <ul>
+        </ul>
+        <div id="home-button">Zur Übersicht</div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/loaders/GLTFLoader.js';
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+        scene.background = new THREE.Color(0x2a2a2a);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+        const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight1.position.set(1, 1, 1);
+        scene.add(directionalLight1);
+        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight2.position.set(-1, 1, -1);
+        scene.add(directionalLight2);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enablePan = true;
+        controls.minDistance = 1;
+        controls.maxDistance = 200; // Erhöhte maximale Zoom-Distanz
+        controls.enableRotate = true; // Sicherstellen, dass Rotation aktiviert ist
+        controls.rotateSpeed = 0.8; // Angepasste Rotationsgeschwindigkeit
+        controls.maxPolarAngle = Math.PI; // Volle Rotation erlauben
+        controls.minPolarAngle = 0; // Volle Rotation erlauben
+
+        // Verbesserte Hotspot-Daten mit ausführlicheren Infos
+        const hotspotsData = [
+            { 
+                name: "8-Pin CPU Power", 
+                objectNames: ["8PinPow"], 
+                info: "Dies ist der 8-Pin-EPS-Anschluss. Er liefert zusätzliche Energie für die CPU. Besonders wichtig bei Hochleistungs-CPUs oder beim Übertakten, um stabile Stromversorgung zu gewährleisten." 
+            },
+            { 
+                name: "24-Pin Motherboard Power", 
+                objectNames: ["24Pin"], 
+                info: "Dies ist der 24-Pin-ATX-Anschluss. Er ist der Hauptstromanschluss für das Mainboard und versorgt die meisten Komponenten mit Strom. Manche High-End-Mainboards von ASUS, MSI oder GIGABYTE haben zusätzliche Stromanschlüsse." 
+            },
+            { 
+                name: "AM4 Sockel", 
+                objectNames: ["AM4Text", "Am4Sockel"], 
+                info: "Dies ist der AM4-Sockel für AMD Ryzen Prozessoren. AMD verwendet hier PGA (Pin Grid Array), bei dem die Pins am Prozessor und nicht am Mainboard sind, im Gegensatz zu Intels LGA (Land Grid Array). AM4 unterstützt mehrere Generationen von Ryzen-Prozessoren." 
+            },
+            { 
+                name: "BIOS Battery", 
+                objectNames: ["BIOSBattery1", "BIOSBattery2"], 
+                info: "Dies ist die CMOS-Batterie (CR2032-Knopfzelle). Sie speichert BIOS/UEFI-Einstellungen wie Boot-Reihenfolge und Hardware-Konfiguration, hält die Systemuhr aktiv, auch wenn der PC ausgeschaltet ist, und verhindert Datenverlust bei Stromausfall für BIOS-Einstellungen. Die Batterie hält typischerweise mehrere Jahre." 
+            },
+            { 
+                name: "Chipsatz", 
+                objectNames: ["Chipset1", "Chipset2"], 
+                info: "Dies ist der Chipsatz des Mainboards. Er steuert die Kommunikation zwischen CPU, RAM und Peripheriegeräten und verwaltet die PCIe-Lanes. Moderne Chipsätze wie AMD X570/B550 oder Intel Z790/B660 bestimmen, welche Technologien (PCIe 4.0/5.0, DDR4/DDR5) unterstützt werden. Früher war der Chipsatz in Northbridge und Southbridge aufgeteilt." 
+            },
+            { 
+                name: "DIMM Slots / RAM", 
+                objectNames: ["DIMM"], 
+                info: "Dies sind die DIMM-Slots für RAM-Module. Moderne Mainboards unterstützen je nach Chipsatz DDR4 oder DDR5 RAM. Die Anzahl der Slots variiert je nach Mainboard-Typ (meist 2-4 auf Consumer-Boards, mehr auf High-End- oder Server-Boards)." 
+            },
+            { 
+                name: "Fan Headers", 
+                objectNames: ["FanHeadersTest1"], 
+                info: "Dies sind die Anschlüsse für Gehäuselüfter und CPU-Lüfter. Sie ermöglichen die Steuerung der Lüftergeschwindigkeit durch das BIOS/UEFI. Mainboards von ASUS, MSI und GIGABYTE bieten oft spezielle Lüftersteuerungssoftware für präzisere Kontrolle." 
+            },
+            { 
+                name: "Front Connectors", 
+                objectNames: ["Front1", "Front2"], 
+                info: "Hier werden die Anschlüsse des Gehäusefrontpanels angeschlossen (Power-Button, Reset-Button, HDD-LEDs, USB, Audio). Die Pinbelegung variiert je nach Hersteller, daher ist es wichtig, das Mainboard-Handbuch zu konsultieren." 
+            },
+            { 
+                name: "M.2 Slot", 
+                objectNames: ["M2Pins", "M2Slot","M2Standoff1","M2Standoff2"], 
+                info: "Dies ist ein M.2-Steckplatz für schnelle SSDs. Er unterstützt NVMe- und SATA-SSDs. NVMe-SSDs nutzen PCIe-Lanes und bieten deutlich höhere Geschwindigkeiten als SATA. Moderne Chipsätze wie AMD X570 oder Intel Z790 bieten PCIe 4.0/5.0 M.2-Slots mit Geschwindigkeiten bis zu 14 GB/s." 
+            },
+            { 
+                name: "PCIe 1x", 
+                objectNames: ["PCIE11"], 
+                info: "Dies sind PCIe-x1-Steckplätze für Erweiterungskarten. Sie bieten eine geringere Bandbreite als die größeren PCIe-Slots und werden typischerweise für Netzwerkkarten, Sound-Karten oder kleinere Erweiterungen verwendet. PCIe (Peripheral Component Interconnect Express) ist eine Hochgeschwindigkeits-Schnittstelle für Kommunikation zwischen Mainboard und Erweiterungskarten." 
+            },
+            { 
+                name: "PCIe Slot 2", 
+                objectNames: ["PCIESlot3", "PCIESlot2", "PCIESlot1"], 
+                info: "Dies ist ein PCIe-x16-Steckplatz. Er wird typischerweise für Grafikkarten oder andere Erweiterungskarten mit hoher Bandbreite verwendet. PCIe 4.0/5.0 x16-Slots bieten massive Bandbreite für modernste Grafikkarten. Die genaue Anzahl der elektrisch angebundenen Lanes kann je nach CPU und Chipsatz variieren." 
+            },
+            { 
+                name: "PCIe Slot 3", 
+                objectNames: ["PCIESlot3"], 
+                info: "Dies ist ein weiterer PCIe-x16-Steckplatz für Grafikkarten oder andere Erweiterungskarten mit hoher Bandbreite. Bei Multi-GPU-Setups verteilen sich die PCIe-Lanes der CPU auf mehrere Slots. Je nach Chipsatz kann dieser Slot mit voller x16-Geschwindigkeit oder reduzierter Geschwindigkeit (x8/x4) laufen." 
+            },
+            { 
+                name: "RGB Header", 
+                objectNames: ["RGBHeader"], 
+                info: "Dies ist ein Anschluss für RGB-Beleuchtung. Hier können Sie RGB-Lüfter, -Streifen oder andere Beleuchtungselemente anschließen. Mainboard-Hersteller wie ASUS (Aura Sync), MSI (Mystic Light) und GIGABYTE (RGB Fusion) haben eigene RGB-Steuerungssoftware." 
+            },
+            { 
+                name: "SATA Anschlüsse", 
+                objectNames: ["SATA"], 
+                info: "Dies sind SATA-Anschlüsse für Festplatten und SSDs. Sie bieten eine geringere Bandbreite (bis zu 600 MB/s) als M.2-NVMe-SSDs. Die Anzahl der SATA-Ports variiert je nach Chipsatz, wobei einige Ports deaktiviert werden können, wenn bestimmte M.2-Slots verwendet werden." 
+            },
+            { 
+                name: "I/O Inputs", 
+                objectNames: ["IO"], 
+                info: "Dies ist das I/O-Panel. Hier befinden sich die Anschlüsse für externe Geräte wie USB, Audio, Netzwerk, DisplayPort, HDMI und andere. Die genaue Ausstattung variiert je nach Mainboard-Modell und Preisklasse." 
+            },
+            { 
+                name: "Interner USB Anschluss", 
+                objectNames: ["USBRNG"], 
+                info: "Dies ist ein interner USB-Anschluss. Er wird oft für Front-Panel-USB-Anschlüsse des Gehäuses oder interne USB-Geräte verwendet. Neuere Mainboards bieten auch interne USB-C-Header für Front-Panel-USB-C-Anschlüsse." 
+            },
+            { 
+                name: "VRM", 
+                objectNames: ["VRMDing"], 
+                info: "Dies ist der VRM (Voltage Regulator Module) Bereich. Er wandelt die Spannung für die CPU herunter und stellt eine stabile Stromversorgung sicher. Besonders wichtig für Übertaktung und Systemstabilität. High-End-Mainboards von ASUS, MSI und GIGABYTE haben oft robustere VRM-Designs mit mehr Phasen für bessere Stabilität bei Übertaktung." 
+            }
+        ];
+
+        let loadedModel;
+        let currentHotspot = null;
+        let originalMaterials = new Map();
+        let initialCameraPosition;
+        let initialCameraTarget;
+        let mainboardCenter = new THREE.Vector3();
+        let mainboardSize = new THREE.Vector3();
+
+        function logSceneHierarchy(object, level = 0) {
+            const indent = '  '.repeat(level);
+            console.log(`${indent}- ${object.name} (${object.type})`);
+            if (object.children) {
+                object.children.forEach(child => {
+                    logSceneHierarchy(child, level + 1);
+                });
+            }
+        }
+
+        const loader = new GLTFLoader();
+        loader.load(
+            'untitled1.glb',
+            function (gltf) {
+                loadedModel = gltf.scene;
+                scene.add(loadedModel);
+
+                const box = new THREE.Box3().setFromObject(loadedModel);
+                mainboardCenter = box.getCenter(new THREE.Vector3());
+                mainboardSize = box.getSize(new THREE.Vector3());
+                loadedModel.position.x = -mainboardCenter.x;
+                loadedModel.position.y = -mainboardCenter.y;
+                loadedModel.position.z = -mainboardCenter.z;
+                
+                const maxDim = Math.max(mainboardSize.x, mainboardSize.y, mainboardSize.z);
+                const fov = camera.fov * (Math.PI / 180);
+                let cameraZ = Math.abs(maxDim / (2 * Math.tan(fov / 2)));
+                
+                // Weiter herausgezoomte Kameraposition beim Start
+                cameraZ *= 1.8; // Erhöhter Faktor für mehr Überblick
+                
+                console.log("Mainboard Center:", mainboardCenter);
+                console.log("Camera Z Position:", cameraZ);
+
+                // Kameraposition für bessere Gesamtübersicht
+                camera.position.set(0, 2, cameraZ);
+                camera.lookAt(0, 0, 0);
+                controls.target.set(0, 0, 0);
+                controls.update();
+
+                initialCameraPosition = camera.position.clone();
+                initialCameraTarget = controls.target.clone();
+
+                console.log("--- Scene Hierarchy ---");
+                logSceneHierarchy(scene);
+                console.log("--- End Scene Hierarchy ---");
+
+                populateSidebar();
+            },
+            undefined,
+            function (error) {
+                console.error(error);
+            }
+        );
+
+        function populateSidebar() {
+            const sidebarList = document.querySelector('#sidebar ul');
+            sidebarList.innerHTML = '';
+            
+            // Sortiere die Hotspots alphabetisch für bessere Navigation
+            const sortedHotspots = [...hotspotsData].sort((a, b) => a.name.localeCompare(b.name));
+            
+            sortedHotspots.forEach(hotspotData => {
+                const li = document.createElement('li');
+                li.textContent = hotspotData.name;
+                li.addEventListener('click', () => {
+                    handleHotspotClick(hotspotData);
+                });
+                sidebarList.appendChild(li);
+            });
+        }
+
+        function handleHotspotClick(hotspotData) {
+            if (currentHotspot) {
+                setActiveHotspot(currentHotspot, false);
+                highlightObjects(currentHotspot.objectNames, false);
+            }
+            currentHotspot = hotspotData;
+            setActiveHotspot(hotspotData, true);
+            displayInfo(hotspotData.info);
+            highlightObjects(hotspotData.objectNames, true);
+        }
+
+        function setActiveHotspot(hotspotData, active) {
+            const liElements = document.querySelectorAll('#sidebar li');
+            liElements.forEach((li) => {
+                li.classList.remove('active');
+            });
+
+            if (active) {
+                const activeLi = Array.from(liElements).find((li) => li.textContent === hotspotData.name);
+                if (activeLi) {
+                    activeLi.classList.add('active');
+                }
+            }
+        }
+
+        function highlightObjects(objectNames, highlight) {
+            if (!loadedModel) return;
+
+            function findObjectByNameRecursive(objectName, root) {
+                let foundObject = null;
+                root.traverse(function(object) {
+                    if (object.name === objectName) {
+                        foundObject = object;
+                    }
+                });
+                return foundObject;
+            }
+
+            function findFirstMeshChildRecursive(object) {
+                if (object.type === 'Mesh') {
+                    return object;
+                }
+                if (object.children) {
+                    for (const child of object.children) {
+                        const meshChild = findFirstMeshChildRecursive(child);
+                        if (meshChild) {
+                            return meshChild;
+                        }
+                    }
+                }
+                return null;
+            }
+
+            objectNames.forEach(objectName => {
+                const containerObject = findObjectByNameRecursive(objectName, loadedModel);
+
+                if (containerObject) {
+                    const meshObject = findFirstMeshChildRecursive(containerObject);
+
+                    if (meshObject && meshObject.material) {
+                        console.log(`[DEBUG] Container-Objekt "${objectName}" gefunden (Typ: ${containerObject.type}). Mesh-Kind gefunden (Typ: ${meshObject.type}) mit Material:`, meshObject.material);
+
+                        if (highlight) {
+                            // Hier wird die Highlight-Farbe gesetzt
+                            meshObject.userData.originalColor = meshObject.material.color.clone();
+                            meshObject.material.color.set(0xFFD700); // Neue Farbe: Gelb Test 
+                            console.log(`[HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf HELLBLAU gesetzt!`);
+                        } else {
+                            if (meshObject.userData.originalColor) {
+                                meshObject.material.color.copy(meshObject.userData.originalColor);
+                                console.log(`[DE-HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf Originalfarbe zurückgesetzt.`);
+                            }
+                        }
+                    } else {
+                        console.warn(`[WARNUNG] Mesh-Objekt oder Material unter Container-Objekt "${objectName}" NICHT gefunden!`);
+                        if (!meshObject) {
+                            console.warn(`[DETAIL] Kein Mesh-Kind unter "${objectName}" gefunden.`);
+                        } else if (!meshObject.material) {
+                            console.warn(`[DETAIL] Mesh-Kind "${meshObject.name}" gefunden, aber ohne Material!`);
+                        }
+                    }
+                } else {
+                    console.warn(`Objekt-Container "${objectName}" NICHT gefunden! (rekursiv gesucht)`);
+                }
+            });
+        }
+
+        function displayInfo(info) {
+            const infoDiv = document.getElementById('info');
+            const infoContent = document.getElementById('info-content');
+            infoContent.textContent = info;
+            infoDiv.classList.add('open');
+        }
+
+        document.getElementById('close-button').addEventListener('click', () => {
+            document.getElementById('info').classList.remove('open');
+        });
+
+        document.getElementById('home-button').addEventListener('click', () => {
+            camera.position.copy(initialCameraPosition);
+            controls.target.copy(initialCameraTarget);
+            controls.update();
+            if (currentHotspot) {
+                setActiveHotspot(currentHotspot, false);
+                highlightObjects(currentHotspot.objectNames, false);
+                currentHotspot = null;
+            }
+            document.getElementById('info').classList.remove('open');
+            const liElements = document.querySelectorAll('#sidebar li');
+            liElements.forEach((li) => {
+                li.classList.remove('active');
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
