@@ -207,13 +207,13 @@
         controls.dampingFactor = 0.05;
         controls.enablePan = true;
         controls.minDistance = 1;
-        controls.maxDistance = 200; // Erhöhte maximale Zoom-Distanz
-        controls.enableRotate = true; // Sicherstellen, dass Rotation aktiviert ist
-        controls.rotateSpeed = 0.8; // Angepasste Rotationsgeschwindigkeit
-        controls.maxPolarAngle = Math.PI; // Volle Rotation erlauben
-        controls.minPolarAngle = 0; // Volle Rotation erlauben
+        controls.maxDistance = 200; 
+        controls.enableRotate = true; t
+        controls.rotateSpeed = 0.8; // Anpassbare Rotationsgeschwindigkeit
+        controls.maxPolarAngle = Math.PI; // Volle Rotation 
+        controls.minPolarAngle = 0; // Volle Rotation 
 
-        // Verbesserte Hotspot-Daten mit ausführlicheren Infos
+        // Alle Hotspots 
         const hotspotsData = [
             { 
                 name: "8-Pin CPU Power", 
@@ -322,7 +322,7 @@
 
         const loader = new GLTFLoader();
         loader.load(
-            'untitled1.glb',
+            'https://github.com/pi314git/MainboardViewer/raw/main/untitled1.glb',
             function (gltf) {
                 loadedModel = gltf.scene;
                 scene.add(loadedModel);
