@@ -175,8 +175,7 @@
     </div>
     <div id="sidebar">
         <h3>Mainboard-Komponenten</h3>
-        <ul>
-        </ul>
+        <ul></ul>
         <div id="home-button">Zur Übersicht</div>
     </div>
 
@@ -208,7 +207,7 @@
         controls.enablePan = true;
         controls.minDistance = 1;
         controls.maxDistance = 200;
-        controls.enableRotate = true; // Fehler: "t" entfernt
+        controls.enableRotate = true;
         controls.rotateSpeed = 0.8;
         controls.maxPolarAngle = Math.PI;
         controls.minPolarAngle = 0;
@@ -218,42 +217,42 @@
             { 
                 name: "8-Pin CPU Power", 
                 objectNames: ["8PinPow"], 
-                info: "Dies ist der 8-Pin-EPS-Anschluss. Er liefert zusätzliche Energie für die CPU. Besonders wichtig bei Hochleistungs-CPUs oder beim Übertakten, um stabile Stromversorgung zu gewährleisten." 
+                info: "Dies ist der 8-Pin-EPS-Anschluss. Er liefert zusätzliche Energie für die CPU. Besonders wichtig bei Hochleistungs-CPUs oder beim Übertakten." 
             },
             { 
                 name: "24-Pin Motherboard Power", 
                 objectNames: ["24Pin"], 
-                info: "Dies ist der 24-Pin-ATX-Anschluss. Er ist der Hauptstromanschluss für das Mainboard und versorgt die meisten Komponenten mit Strom. Manche High-End-Mainboards von ASUS, MSI oder GIGABYTE haben zusätzliche Stromanschlüsse." 
+                info: "Dies ist der 24-Pin-ATX-Anschluss. Er versorgt das Mainboard und die meisten Komponenten mit Strom." 
             },
             { 
                 name: "AM4 Sockel", 
                 objectNames: ["AM4Text", "Am4Sockel"], 
-                info: "Dies ist der AM4-Sockel für AMD Ryzen Prozessoren. AMD verwendet hier PGA (Pin Grid Array), bei dem die Pins am Prozessor und nicht am Mainboard sind, im Gegensatz zu Intels LGA (Land Grid Array). AM4 unterstützt mehrere Generationen von Ryzen-Prozessoren." 
+                info: "Dies ist der AM4-Sockel für AMD Ryzen Prozessoren, bei dem die Pins am Prozessor sind." 
             },
             { 
                 name: "BIOS Battery", 
                 objectNames: ["BIOSBattery1", "BIOSBattery2"], 
-                info: "Dies ist die CMOS-Batterie (CR2032-Knopfzelle). Sie speichert BIOS/UEFI-Einstellungen, hält die Systemuhr aktiv und verhindert Datenverlust bei Stromausfall." 
+                info: "Dies ist die CMOS-Batterie (CR2032), die BIOS/UEFI-Einstellungen speichert." 
             },
             { 
                 name: "Chipsatz", 
                 objectNames: ["Chipset1", "Chipset2"], 
-                info: "Dies ist der Chipsatz des Mainboards. Er steuert die Kommunikation zwischen CPU, RAM und Peripheriegeräten und verwaltet die PCIe-Lanes." 
+                info: "Dies ist der Chipsatz des Mainboards, der die Kommunikation zwischen CPU, RAM und Peripheriegeräten steuert." 
             },
             { 
                 name: "DIMM Slots / RAM", 
                 objectNames: ["DIMM"], 
-                info: "Dies sind die DIMM-Slots für RAM-Module. Moderne Mainboards unterstützen DDR4 oder DDR5, je nach Chipsatz." 
+                info: "Dies sind die DIMM-Slots für RAM-Module. Moderne Mainboards unterstützen DDR4 oder DDR5." 
             },
             { 
                 name: "Fan Headers", 
                 objectNames: ["FanHeadersTest1"], 
-                info: "Dies sind die Anschlüsse für Gehäuselüfter und CPU-Lüfter. Sie ermöglichen die Steuerung der Lüftergeschwindigkeit durch das BIOS/UEFI." 
+                info: "Dies sind die Anschlüsse für Gehäuselüfter und CPU-Lüfter zur Steuerung der Lüftergeschwindigkeit." 
             },
             { 
                 name: "Front Connectors", 
                 objectNames: ["Front1", "Front2"], 
-                info: "Hier werden die Anschlüsse des Gehäusefrontpanels angeschlossen (Power-Button, Reset-Button, USB, Audio)." 
+                info: "Hier werden die Anschlüsse des Gehäusefrontpanels (Power, Reset, USB, Audio) verbunden." 
             },
             { 
                 name: "M.2 Slot", 
@@ -268,7 +267,7 @@
             { 
                 name: "PCIe Slot 2", 
                 objectNames: ["PCIESlot3", "PCIESlot2", "PCIESlot1"], 
-                info: "Dies ist ein PCIe-x16-Steckplatz, typischerweise für Grafikkarten verwendet." 
+                info: "Dies ist ein PCIe-x16-Steckplatz, typischerweise für Grafikkarten." 
             },
             { 
                 name: "PCIe Slot 3", 
@@ -278,17 +277,17 @@
             { 
                 name: "RGB Header", 
                 objectNames: ["RGBHeader"], 
-                info: "Dies ist ein Anschluss für RGB-Beleuchtung. Hier können RGB-Lüfter oder -Streifen angeschlossen werden." 
+                info: "Dies ist ein Anschluss für RGB-Beleuchtung, an dem RGB-Lüfter oder -Streifen angeschlossen werden können." 
             },
             { 
                 name: "SATA Anschlüsse", 
                 objectNames: ["SATA"], 
-                info: "Dies sind SATA-Anschlüsse für Festplatten und SSDs, mit einer maximalen Geschwindigkeit von bis zu 600 MB/s." 
+                info: "Dies sind SATA-Anschlüsse für Festplatten und SSDs (bis zu 600 MB/s)." 
             },
             { 
                 name: "I/O Inputs", 
                 objectNames: ["IO"], 
-                info: "Dies ist das I/O-Panel für externe Geräte (USB, Audio, Netzwerk, etc.)." 
+                info: "Dies ist das I/O-Panel für externe Geräte wie USB, Audio und Netzwerk." 
             },
             { 
                 name: "Interner USB Anschluss", 
@@ -298,7 +297,7 @@
             { 
                 name: "VRM", 
                 objectNames: ["VRMDing"], 
-                info: "Dies ist der VRM-Bereich. Er wandelt die Spannung für die CPU um und stellt eine stabile Stromversorgung sicher." 
+                info: "Dies ist der VRM-Bereich, der die Spannung für die CPU umwandelt und für stabile Stromversorgung sorgt." 
             }
         ];
 
@@ -330,9 +329,7 @@
                 const box = new THREE.Box3().setFromObject(loadedModel);
                 mainboardCenter = box.getCenter(new THREE.Vector3());
                 mainboardSize = box.getSize(new THREE.Vector3());
-                loadedModel.position.x = -mainboardCenter.x;
-                loadedModel.position.y = -mainboardCenter.y;
-                loadedModel.position.z = -mainboardCenter.z;
+                loadedModel.position.set(-mainboardCenter.x, -mainboardCenter.y, -mainboardCenter.z);
                 
                 const maxDim = Math.max(mainboardSize.x, mainboardSize.y, mainboardSize.z);
                 const fov = camera.fov * (Math.PI / 180);
@@ -358,7 +355,7 @@
             },
             undefined,
             function (error) {
-                console.error(error);
+                console.error('Error loading model:', error);
             }
         );
 
@@ -367,7 +364,6 @@
             sidebarList.innerHTML = '';
             
             const sortedHotspots = [...hotspotsData].sort((a, b) => a.name.localeCompare(b.name));
-            
             sortedHotspots.forEach(hotspotData => {
                 const li = document.createElement('li');
                 li.textContent = hotspotData.name;
@@ -394,7 +390,6 @@
             liElements.forEach((li) => {
                 li.classList.remove('active');
             });
-
             if (active) {
                 const activeLi = Array.from(liElements).find((li) => li.textContent === hotspotData.name);
                 if (activeLi) {
@@ -405,7 +400,6 @@
 
         function highlightObjects(objectNames, highlight) {
             if (!loadedModel) return;
-
             function findObjectByNameRecursive(objectName, root) {
                 let foundObject = null;
                 root.traverse(function(object) {
@@ -415,31 +409,22 @@
                 });
                 return foundObject;
             }
-
             function findFirstMeshChildRecursive(object) {
-                if (object.type === 'Mesh') {
-                    return object;
-                }
+                if (object.type === 'Mesh') return object;
                 if (object.children) {
                     for (const child of object.children) {
                         const meshChild = findFirstMeshChildRecursive(child);
-                        if (meshChild) {
-                            return meshChild;
-                        }
+                        if (meshChild) return meshChild;
                     }
                 }
                 return null;
             }
-
             objectNames.forEach(objectName => {
                 const containerObject = findObjectByNameRecursive(objectName, loadedModel);
-
                 if (containerObject) {
                     const meshObject = findFirstMeshChildRecursive(containerObject);
-
                     if (meshObject && meshObject.material) {
                         console.log(`[DEBUG] Container-Objekt "${objectName}" gefunden (Typ: ${containerObject.type}). Mesh-Kind gefunden (Typ: ${meshObject.type}) mit Material:`, meshObject.material);
-
                         if (highlight) {
                             meshObject.userData.originalColor = meshObject.material.color.clone();
                             meshObject.material.color.set(0xFFD700);
