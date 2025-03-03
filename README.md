@@ -33,6 +33,14 @@ The application is built using:
 
 THREE.js: For 3D rendering and interactive controls
 JavaScript ES6+: For application logic and interactivity
+
+
+Credits
+
+3D Model: ASUS ROG STRIX X370-F GAMING motherboard - https://sketchfab.com/3d-models/rog-strix-x370-f-motherboard-56bd8923fdf341fd8d81b717055a61dd#download
+THREE.js Library for various JS Components : https://threejs.org/
+Motherboard specifications: https://rog.asus.com/motherboards/rog-strix/rog-strix-x370-f-gaming-model/
+
 HTML5/CSS3: For UI layout and styling
 SVG: For the form factor comparison visualization
 
