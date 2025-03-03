@@ -177,7 +177,7 @@
         <h3>Mainboard-Komponenten</h3>
         <ul>
         </ul>
-        <div id="home-button">Zur Übersicht</div>
+        <div id="home-button">Kamera Reset</div>
     </div>
 
     <script type="module">
@@ -207,13 +207,13 @@
         controls.dampingFactor = 0.05;
         controls.enablePan = true;
         controls.minDistance = 1;
-        controls.maxDistance = 200; // Erhöhte maximale Zoom-Distanz
-        controls.enableRotate = true; // Sicherstellen, dass Rotation aktiviert ist
-        controls.rotateSpeed = 0.8; // Angepasste Rotationsgeschwindigkeit
-        controls.maxPolarAngle = Math.PI; // Volle Rotation erlauben
-        controls.minPolarAngle = 0; // Volle Rotation erlauben
+        controls.maxDistance = 200; // Max zoom distanz
+        controls.enableRotate = true; // Rotation an/aus
+        controls.rotateSpeed = 0.8; // Rotationspeed
+        controls.maxPolarAngle = Math.PI; // Full rotation 
+        controls.minPolarAngle = 0; // Full rotation 2
 
-        // Verbesserte Hotspot-Daten mit ausführlicheren Infos
+        // Alle Hotspot sachen
         const hotspotsData = [
             { 
                 name: "8-Pin CPU Power", 
@@ -228,7 +228,7 @@
             { 
                 name: "AM4 Sockel", 
                 objectNames: ["AM4Text", "Am4Sockel"], 
-                info: "Dies ist der AM4-Sockel für AMD Ryzen Prozessoren. AMD verwendet hier PGA (Pin Grid Array), bei dem die Pins am Prozessor und nicht am Mainboard sind, im Gegensatz zu Intels LGA (Land Grid Array). AM4 unterstützt mehrere Generationen von Ryzen-Prozessoren." 
+                info: "Dies ist der AM4-Sockel für AMD Ryzen-Prozessoren. AMD verwendet hier die PGA-Architektur (Pin Grid Array), bei der die Pins am Prozessor selbst und nicht am Mainboard angebracht sind, im Unterschied zur LGA-Architektur (Land Grid Array) von Intel. AM4 unterstützt mehrere Generationen von Ryzen-Prozessoren." 
             },
             { 
                 name: "BIOS Battery", 
@@ -266,15 +266,11 @@
                 info: "Dies sind PCIe-x1-Steckplätze für Erweiterungskarten. Sie bieten eine geringere Bandbreite als die größeren PCIe-Slots und werden typischerweise für Netzwerkkarten, Sound-Karten oder kleinere Erweiterungen verwendet. PCIe (Peripheral Component Interconnect Express) ist eine Hochgeschwindigkeits-Schnittstelle für Kommunikation zwischen Mainboard und Erweiterungskarten." 
             },
             { 
-                name: "PCIe Slot 2", 
+                name: "PCIe Slot 16x", 
                 objectNames: ["PCIESlot3", "PCIESlot2", "PCIESlot1"], 
                 info: "Dies ist ein PCIe-x16-Steckplatz. Er wird typischerweise für Grafikkarten oder andere Erweiterungskarten mit hoher Bandbreite verwendet. PCIe 4.0/5.0 x16-Slots bieten massive Bandbreite für modernste Grafikkarten. Die genaue Anzahl der elektrisch angebundenen Lanes kann je nach CPU und Chipsatz variieren." 
             },
-            { 
-                name: "PCIe Slot 3", 
-                objectNames: ["PCIESlot3"], 
-                info: "Dies ist ein weiterer PCIe-x16-Steckplatz für Grafikkarten oder andere Erweiterungskarten mit hoher Bandbreite. Bei Multi-GPU-Setups verteilen sich die PCIe-Lanes der CPU auf mehrere Slots. Je nach Chipsatz kann dieser Slot mit voller x16-Geschwindigkeit oder reduzierter Geschwindigkeit (x8/x4) laufen." 
-            },
+           
             { 
                 name: "RGB Header", 
                 objectNames: ["RGBHeader"], 
@@ -290,11 +286,7 @@
                 objectNames: ["IO"], 
                 info: "Dies ist das I/O-Panel. Hier befinden sich die Anschlüsse für externe Geräte wie USB, Audio, Netzwerk, DisplayPort, HDMI und andere. Die genaue Ausstattung variiert je nach Mainboard-Modell und Preisklasse." 
             },
-            { 
-                name: "Interner USB Anschluss", 
-                objectNames: ["USBRNG"], 
-                info: "Dies ist ein interner USB-Anschluss. Er wird oft für Front-Panel-USB-Anschlüsse des Gehäuses oder interne USB-Geräte verwendet. Neuere Mainboards bieten auch interne USB-C-Header für Front-Panel-USB-C-Anschlüsse." 
-            },
+            
             { 
                 name: "VRM", 
                 objectNames: ["VRMDing"], 
@@ -340,12 +332,12 @@
                 let cameraZ = Math.abs(maxDim / (2 * Math.tan(fov / 2)));
                 
                 // Weiter herausgezoomte Kameraposition beim Start
-                cameraZ *= 1.8; // Erhöhter Faktor für mehr Überblick
+                cameraZ *= 1.8; // je höher desto weiter 
                 
                 console.log("Mainboard Center:", mainboardCenter);
                 console.log("Camera Z Position:", cameraZ);
 
-                // Kameraposition für bessere Gesamtübersicht
+                // Kameraposi gesamt
                 camera.position.set(0, 2, cameraZ);
                 camera.lookAt(0, 0, 0);
                 controls.target.set(0, 0, 0);
@@ -358,7 +350,7 @@
                 logSceneHierarchy(scene);
                 console.log("--- End Scene Hierarchy ---");
 
-                // Finde und verstecke das Cube-Objekt
+                // Cube finden und ausblenden
                 findAndHideCube();
 
                 populateSidebar();
@@ -369,7 +361,7 @@
             }
         );
 
-        // Funktion zum Finden und Ausblenden des Cube-Objekts
+        // Funktion für cube hide and seek
         function findAndHideCube() {
             if (!loadedModel) return;
 
@@ -397,7 +389,7 @@
             const sidebarList = document.querySelector('#sidebar ul');
             sidebarList.innerHTML = '';
             
-            // Sortiere die Hotspots alphabetisch für bessere Navigation
+            // Name Sorting Kacheln
             const sortedHotspots = [...hotspotsData].sort((a, b) => a.name.localeCompare(b.name));
             
             sortedHotspots.forEach(hotspotData => {
@@ -415,7 +407,7 @@
                 setActiveHotspot(currentHotspot, false);
                 highlightObjects(currentHotspot.objectNames, false);
                 
-                // Wenn wir den Chipsatz verlassen, verstecke den Cube wieder
+                // Chipsatz If dings 1
                 if (currentHotspot.name === "Chipsatz" && cubeObject) {
                     cubeObject.visible = false;
                 }
@@ -426,7 +418,7 @@
             displayInfo(hotspotData.info);
             highlightObjects(hotspotData.objectNames, true);
             
-            // Wenn Chipsatz ausgewählt wurde, zeige den Cube an
+            // Chipsatz if dings 2
             if (hotspotData.name === "Chipsatz" && cubeObject) {
                 cubeObject.visible = true;
                 console.log("Cube-Objekt wird angezeigt, da Chipsatz ausgewählt wurde");
@@ -485,10 +477,10 @@
                         console.log(`[DEBUG] Container-Objekt "${objectName}" gefunden (Typ: ${containerObject.type}). Mesh-Kind gefunden (Typ: ${meshObject.type}) mit Material:`, meshObject.material);
 
                         if (highlight) {
-                            // Hier wird die Highlight-Farbe gesetzt
+                             
                             meshObject.userData.originalColor = meshObject.material.color.clone();
                             meshObject.material.color.set(0xFFD700); // Neue Farbe: Gelb Test 
-                            console.log(`[HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf HELLBLAU gesetzt!`);
+                            console.log(`[HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf GELB gesetzt!`);
                         } else {
                             if (meshObject.userData.originalColor) {
                                 meshObject.material.color.copy(meshObject.userData.originalColor);
@@ -528,7 +520,7 @@
                 setActiveHotspot(currentHotspot, false);
                 highlightObjects(currentHotspot.objectNames, false);
                 
-                // Wenn wir zurück zur Übersicht gehen, verstecke den Cube wieder
+                // Home = No cube 
                 if (currentHotspot.name === "Chipsatz" && cubeObject) {
                     cubeObject.visible = false;
                 }
@@ -555,6 +547,285 @@
         }
 
         animate();
-    </script>
+
+    </script>	
+<!-- ATX Form Faktor Info Box und Formfaktor Tab Button zusammen -->
+<div style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 1000;">
+    <!-- Formfaktor Tab Button - jetzt über der Info-Box -->
+    <div id="formfaktor-tab" style="background: linear-gradient(90deg, rgba(255, 165, 0, 0.8), rgba(255, 140, 0, 0.6)); color: #fff; padding: 10px 15px; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); transition: all 0.2s; font-weight: 500;">
+        Formfaktor-Vergleich
+    </div>
+
+    <!-- ATX Form Faktor Info Box -->
+    <div id="form-factor-info" style="background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.95)); color: #f0f0f0; padding: 10px 15px; border-radius: 10px; font-size: 14px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);">
+        <a href="https://rog.asus.com/de/motherboards/rog-strix/rog-strix-x370-f-gaming-model/spec/" target="_blank" style="color: #ff8c00; text-decoration: none; transition: color 0.2s;">ASUS ROG STRIX X370-F GAMING Mainboard</a> (ATX Form Faktor: 12 inch × 9.6 inch (30.5 cm × 24.4 cm)
+    </div>
+</div>
+
+<!-- Formfaktor Vergleich Overlay -->
+<div id="formfactor-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 2000; display: none; justify-content: center; align-items: center; overflow: hidden;">
+    <div style="position: relative; width: 90%; max-width: 900px; max-height: 90vh; background: linear-gradient(145deg, rgba(40, 40, 40, 0.95), rgba(25, 25, 25, 0.98)); border-radius: 15px; padding: 30px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); color: #f0f0f0; border: 1px solid rgba(255, 255, 255, 0.1); overflow-y: auto;">
+        <div id="close-formfactor" style="position: sticky; top: 0; float: right; font-size: 24px; cursor: pointer; color: #aaa; transition: color 0.2s; z-index: 10;">&#10006;</div>
+        <h2 style="margin-top: 0; color: #ff8c00; text-align: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255, 165, 0, 0.3); padding-bottom: 15px;">Mainboard Formfaktor-Vergleich</h2>
+        
+        <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+            <svg id="formfactor-svg" width="800" height="500" style="max-width: 100%;">
+                <!-- SVG wird durch JavaScript generiert -->
+            </svg>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 15px;">
+            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #ff8c00;">
+                <h3 style="margin-top: 0; color: #ff8c00;">ATX</h3>
+                <p>12" × 9.6" (30.5 cm × 24.4 cm)</p>
+                <p>Standard für die meisten Desktop-PCs. Bietet gute Erweiterungsmöglichkeiten mit mehreren PCIe-Slots und 4 RAM-Steckplätzen.</p>
+            </div>
+            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #4682B4;">
+                <h3 style="margin-top: 0; color: #4682B4;">Micro-ATX</h3>
+                <p>9.6" × 9.6" (24.4 cm × 24.4 cm)</p>
+                <p>Kompakter als ATX, aber mit ähnlichen Funktionen. Hat typischerweise weniger Erweiterungssteckplätze.</p>
+            </div>
+            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #32CD32;">
+                <h3 style="margin-top: 0; color: #32CD32;">Mini-ITX</h3>
+                <p>6.7" × 6.7" (17 cm × 17 cm)</p>
+                <p>Sehr kompaktes Format für kleine PC-Gehäuse. Meist nur ein PCIe-Slot und 2 RAM-Steckplätze.</p>
+            </div>
+            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #9370DB;">
+                <h3 style="margin-top: 0; color: #9370DB;">E-ATX</h3>
+                <p>12" × 13" (30.5 cm × 33 cm)</p>
+                <p>Erweitertes ATX-Format für High-End-Systeme mit zusätzlichen Erweiterungsmöglichkeiten und Features.</p>
+            </div>
+            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #FF6347;">
+                <h3 style="margin-top: 0; color: #FF6347;">Dual Sockel</h3>
+                <p>13" × 14" (33 cm × 35.6 cm) oder größer</p>
+                <p>Für Workstations und Server mit zwei CPU-Sockeln. Sehr große Boards mit vielen Erweiterungsmöglichkeiten.</p>
+            </div>
+            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #FFD700;">
+                <h3 style="margin-top: 0; color: #FFD700;">Notebook</h3>
+                <p>~ 8" × 5" (20.3 cm × 12.7 cm) variiert stark</p>
+                <p>Speziell für Laptops entwickelt. Stark integrierte Komponenten mit wenig Erweiterungsmöglichkeiten.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sofortige Ausführung des Codes ohne DOMContentLoaded zu warten
+    (function() {
+        // Direktes Hinzufügen der Event-Listener
+        const formfactorTab = document.getElementById('formfaktor-tab');
+        const formfactorOverlay = document.getElementById('formfactor-overlay');
+        const closeFormfactor = document.getElementById('close-formfactor');
+        
+        if (formfactorTab) {
+            formfactorTab.onclick = function() {
+                if (formfactorOverlay) {
+                    formfactorOverlay.style.display = 'flex';
+                    drawFormfactorComparison();
+                }
+            };
+            
+            // Hover-Effekte
+            formfactorTab.onmouseenter = function() {
+                this.style.transform = 'translateY(-3px)';
+                this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.3)';
+            };
+            
+            formfactorTab.onmouseleave = function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.3)';
+            };
+        }
+        
+        if (closeFormfactor) {
+            closeFormfactor.onclick = function() {
+                if (formfactorOverlay) {
+                    formfactorOverlay.style.display = 'none';
+                }
+            };
+        }
+        
+        // ESC-Taste schließt das Overlay
+        document.onkeydown = function(e) {
+            if (e.key === 'Escape' && formfactorOverlay && formfactorOverlay.style.display === 'flex') {
+                formfactorOverlay.style.display = 'none';
+            }
+        };
+        
+        // Klick außerhalb des Overlays schließt es
+        if (formfactorOverlay) {
+            formfactorOverlay.onclick = function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            };
+        }
+        
+        // Größenanpassung bei Fensteränderung
+        window.onresize = function() {
+            if (formfactorOverlay && formfactorOverlay.style.display === 'flex') {
+                drawFormfactorComparison();
+            }
+        };
+        
+        // Führe auch DOMContentLoaded-Setup für Abwärtskompatibilität durch
+        document.addEventListener('DOMContentLoaded', function() {
+            // Falls die direkten Bindungen nicht funktioniert haben
+            const formfactorTab = document.getElementById('formfaktor-tab');
+            const formfactorOverlay = document.getElementById('formfactor-overlay');
+            const closeFormfactor = document.getElementById('close-formfactor');
+            
+            if (formfactorTab) {
+                formfactorTab.addEventListener('click', function() {
+                    if (formfactorOverlay) {
+                        formfactorOverlay.style.display = 'flex';
+                        drawFormfactorComparison();
+                    }
+                });
+                
+                formfactorTab.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                    this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.3)';
+                });
+                
+                formfactorTab.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.3)';
+                });
+            }
+            
+            if (closeFormfactor) {
+                closeFormfactor.addEventListener('click', function() {
+                    if (formfactorOverlay) {
+                        formfactorOverlay.style.display = 'none';
+                    }
+                });
+            }
+        });
+    })();
+
+    // Formfaktor SVG zeichnen - Verbesserte Version
+    function drawFormfactorComparison() {
+    // Formfaktor-Daten (Breite, Höhe in cm)
+    const formfactors = [
+        { name: "Dual Sockel", width: 33, height: 35.6, color: "#FF6347" },
+        { name: "E-ATX", width: 30.5, height: 33, color: "#9370DB" },
+        { name: "ATX", width: 30.5, height: 24.4, color: "#ff8c00" },
+        { name: "Micro-ATX", width: 24.4, height: 24.4, color: "#4682B4" },
+        { name: "Mini-ITX", width: 17, height: 17, color: "#32CD32" },
+        { name: "Notebook", width: 20.3, height: 12.7, color: "#FFD700" }
+    ];
+
+    const svg = document.getElementById('formfactor-svg');
+    if (!svg) {
+        console.error('SVG-Element nicht gefunden');
+        return;
+    }
+
+    svg.innerHTML = ''; // Clear previous content
+
+    // Scale factor für bessere Darstellung
+    const scale = 10;
+    const padding = 120; // Mehr Padding für Textbeschriftungen
+    const maxWidth = Math.max(...formfactors.map(f => f.width)) * scale + padding * 2;
+    const maxHeight = Math.max(...formfactors.map(f => f.height)) * scale + padding * 2;
+
+    svg.setAttribute('viewBox', `0 0 ${maxWidth} ${maxHeight}`);
+
+    // Zentrierte Positionierung
+    const centerX = maxWidth / 2;
+    const centerY = maxHeight / 2;
+
+    // Neue Textversatz-Positionen - Links neben den Visualisierungen
+    const textOffsets = {
+        "Dual Sockel": { x: -380, y: -0 },
+        "E-ATX": { x: -380, y: -50 },
+        "ATX": { x: -380, y: -100 },
+        "Micro-ATX": { x: -380, y: -150 },
+        "Mini-ITX": { x: -380, y: -200 },
+        "Notebook": { x: -380, y: -250 }
+    };
+
+    try {
+        // Zeichne von größtem zu kleinstem, um Überlappung zu vermeiden
+        formfactors.forEach(ff => {
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            const x = centerX - (ff.width * scale / 2);
+            const y = centerY - (ff.height * scale / 2);
+            
+            rect.setAttribute('x', x);
+            rect.setAttribute('y', y);
+            rect.setAttribute('width', ff.width * scale);
+            rect.setAttribute('height', ff.height * scale);
+            rect.setAttribute('stroke', ff.color);
+            rect.setAttribute('stroke-width', '3');
+            rect.setAttribute('fill', ff.color + '20'); // Transparente Füllung
+            rect.setAttribute('rx', '5'); // Abgerundete Ecken
+            svg.appendChild(rect);
+
+            // Labels links von den Visualisierungen
+            const textX = centerX + textOffsets[ff.name].x;
+            const textY = centerY + textOffsets[ff.name].y;
+            
+            // Hintergrund für bessere Lesbarkeit
+            const textBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            textBg.setAttribute('x', textX - 60);
+            textBg.setAttribute('y', textY - 18);
+            textBg.setAttribute('width', 120);
+            textBg.setAttribute('height', 40);
+            textBg.setAttribute('fill', 'rgba(40, 40, 40, 0.7)');
+            textBg.setAttribute('rx', '4');
+            svg.appendChild(textBg);
+
+            // Name
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', textX);
+            text.setAttribute('y', textY);
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('fill', ff.color);
+            text.setAttribute('font-weight', 'bold');
+            text.setAttribute('font-size', '14px');
+            text.textContent = ff.name;
+            svg.appendChild(text);
+
+            const dimensions = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            dimensions.setAttribute('x', textX);
+            dimensions.setAttribute('y', textY + 20);
+            dimensions.setAttribute('text-anchor', 'middle');
+            dimensions.setAttribute('fill', '#ffffff');
+            dimensions.setAttribute('font-size', '12px');
+            dimensions.textContent = `${ff.width} × ${ff.height} cm`;
+            svg.appendChild(dimensions);
+        });
+
+        // **Hinzufügen des Hyperlinks**:
+        const link = document.createElementNS("http://www.w3.org/2000/svg", "a");
+        link.setAttribute("href", "https://www.wired.com/story/motherboard-size-explainer/");
+        link.setAttribute("target", "_blank"); // Öffnet den Link in einem neuen Tab
+
+        const legendY = maxHeight - 15;
+        const legendX = maxWidth / 2;
+
+        const legend = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        legend.setAttribute("x", legendX);
+        legend.setAttribute("y", legendY);
+        legend.setAttribute("text-anchor", "middle");
+        legend.setAttribute("fill", "#FFD700"); // Goldene Farbe für bessere Sichtbarkeit
+        legend.setAttribute("font-size", "20px");
+        legend.setAttribute("cursor", "pointer"); // Mauszeiger als Hand anzeigen
+        legend.textContent = "Ausführlicher Beitrag zu Formfaktoren (englisch) <- Klick";
+
+        // Den Text in den Link einfügen
+        link.appendChild(legend);
+
+        // Den Link in das SVG einfügen
+        svg.appendChild(link);
+
+    } catch (error) {
+        console.error('Fehler beim Zeichnen des SVG:', error);
+    }
+}
+
+</script>
 </body>
 </html>
