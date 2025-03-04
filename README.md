@@ -1,6 +1,6 @@
 Overview
 
-The Mainboard 3D Viewer is a web-based application that provides an interactive 3D exploration experience of a computer motherboard. This tool is designed for educational purposes, allowing users to understand the various components of a motherboard through visualization and detailed descriptions.
+The Mainboard 3D Viewer is a web-based application that provides an interactive 3D exploration experience of a computer motherboard. (Made with the Help auf Claude Sonnet 3.5/3.7) This tool is designed for educational purposes, allowing users to understand the various components of a motherboard through visualization and detailed descriptions.
 The application features the ASUS ROG STRIX X370-F GAMING motherboard as its 3D model, providing a detailed look at this ATX form factor board.
 
 
