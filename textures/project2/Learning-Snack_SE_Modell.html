@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sender-Empfänger Modell</title>
     <style>
+
         :root {
             --primary: #3498db;
             --secondary: #2980b9;
@@ -245,55 +246,25 @@
             border-radius: 4px;
             font-weight: 500;
         }
-		
-		.sidebar {
-    width: var(--sidebar-width);
-    background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
-    color: white;
-    padding: 25px 0;
-    position: fixed;
-    height: 100vh;
-    overflow-y: auto;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
-}
-
-.sidebar.open {
-    transform: translateX(0);
-}
-
-.sidebar-toggle {
-    position: fixed;
-    top: 20px;
-    left: 10px;
-    background-color: var(--gradient-start);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 1001;
-}
-
-		
-		
     </style>
+
+
 </head>
 <body>
-<div class="sidebar-container">
-    <button id="sidebar-toggle" class="sidebar-toggle">☰</button>
-    <div class="sidebar" id="sidebar">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Sender-Empfänger Modell</h2>
+        </div>
         <ul class="nav-list">
-            <li class="nav-item"><a href="#grundprinzipien">📋 1. Grundprinzipien</a></li>
-            <li class="nav-item"><a href="#kommunikationsformen">💬 2. Kommunikationsformen</a></li>
-            <li class="nav-item"><a href="#stoerungen">⚠️ 3. Störungen und Grenzen</a></li>
-            <li class="nav-item"><a href="#beispiele">🔍 4. Beispielszenarien</a></li>
-            <li class="nav-item"><a href="#anwendungsfaelle">📱 5. Weitere Anwendungsfälle</a></li>
-            <li class="nav-item"><a href="#quiz">📝 6. Quiz</a></li>
-        </ul>
+    <li class="nav-item active"><a href="#grundprinzipien">📋 1. Grundprinzipien</a></li>
+    <li class="nav-item"><a href="#kommunikationsformen">💬 2. Kommunikationsformen</a></li>
+    <li class="nav-item"><a href="#stoerungen">⚠️ 3. Störungen und Grenzen</a></li>
+    <li class="nav-item"><a href="#beispiele">🔍 4. Beispielszenarien</a></li>
+    <li class="nav-item"><a href="#anwendungsfaelle">📱 5. Weitere Anwendungsfälle</a></li>
+    <li class="nav-item"><a href="#quiz">📝 6. Quiz</a></li>
+</ul>
     </div>
-</div>
-
 
     <!-- Main Content Area -->
     <div class="content">
@@ -301,7 +272,6 @@
         <section id="grundprinzipien" class="section">
             <h2>1. Grundprinzipien des Sender-Empfänger-Modells</h2>
             
-			<p> <b> Eine Zusammenfassung des Sender-Empfänger-Modells findest du unter folgendem Link in <a href="https://studyflix.de/biologie/sender-empfaenger-modell-2694">Videoform </b> </a> </p>
             <p>Das <strong>Sender-Empfänger-Modell</strong> beschreibt die Kommunikation als Übertragung einer Nachricht von einem Sender zu einem Empfänger. Die Hauptprinzipien sind:</p>
             
             <ol>
@@ -739,91 +709,6 @@
         color: var(--primary);
         margin-bottom: 15px;
     }
-	
-	
-	<style>
-  .sidebar {
-    transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
-    z-index: 1000;
-  }
-  
-  .sidebar-collapsed {
-    transform: translateX(calc(-100% + 50px));
-    width: var(--sidebar-width);
-  }
-  
-  .content {
-    transition: margin-left 0.3s ease-in-out, max-width 0.3s ease-in-out;
-  }
-  
-  .content-expanded {
-    margin-left: 50px;
-    max-width: calc(100% - 50px);
-  }
-  
-  .sidebar-toggle {
-    position: absolute;
-    top: 20px;
-    right: -40px;
-    background-color: var(--gradient-start);
-    color: white;
-    border: none;
-    border-radius: 0 5px 5px 0;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 1001;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    transition: right 0.3s ease-in-out;
-  }
-  
-  .sidebar-collapsed .sidebar-toggle {
-    right: -50px;
-  }
-  
-  .toggle-icon {
-    font-size: 1.2rem;
-    display: block;
-    transition: transform 0.3s ease;
-  }
-  
-  .sidebar-collapsed .toggle-icon {
-    transform: rotate(180deg);
-  }
-  
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 100%;
-      transform: translateY(-100%);
-      height: auto;
-      position: fixed;
-      padding-bottom: 10px;
-    }
-    
-    .sidebar-collapsed {
-      transform: translateY(-100%);
-    }
-    
-    .sidebar-toggle {
-      top: 0;
-      right: 20px;
-      border-radius: 0 0 5px 5px;
-    }
-    
-    .content {
-      margin-left: 0;
-      max-width: 100%;
-      margin-top: 50px;
-    }
-    
-    .content-expanded {
-      margin-left: 0;
-    }
-  }
-</style>
-
-	
-	
-	
 </style>
 
 <script>
@@ -987,27 +872,7 @@
         }
     });
 </script>
-	
-<script>
-    document.getElementById('sidebar-toggle').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('open');
-        document.querySelector('.content').classList.toggle('sidebar-open');
-    });
-
-    window.addEventListener('scroll', function() {
-        let sections = document.querySelectorAll('section');
-        let navItems = document.querySelectorAll('.nav-item');
-        let scrollPos = window.scrollY + 100;
-        
-        sections.forEach((section, index) => {
-            if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
-                navItems.forEach(item => item.classList.remove('active'));
-                navItems[index].classList.add('active');
-            }
-        });
-    });
-</script>
-
+		
 </body>
 </html>
 
