@@ -6,17 +6,17 @@
     <title>Sender-Empfänger Modell</title>
     <style>
 
-        :root {
-            --primary: #3498db;
-            --secondary: #2980b9;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --text: #333;
-            --sidebar-width: 260px;
-            --accent: #1abc9c;
-            --gradient-start: #2c3e50;
-            --gradient-end: #1a2634;
-        }
+       :root {
+    --primary: #3498db;
+    --secondary: #2980b9;
+    --light: #ecf0f1;
+    --dark: #2c3e50;
+    --text: #333;
+    --sidebar-width: 320px; /* Increased from 260px to 320px */
+    --accent: #1abc9c;
+    --gradient-start: #2c3e50;
+    --gradient-end: #1a2634;
+}
         
         * {
             margin: 0;
@@ -75,16 +75,33 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
         
-        .nav-item a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 12px 20px;
-            position: relative;
-            transition: all 0.3s ease;
-            font-weight: 400;
-        }
-        
+       .nav-item a {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+    font-weight: 400;
+}
+		
+		.nav-item a {
+    display: flex;
+    align-items: center;
+}
+
+.nav-item a::before {
+    content: attr(data-number);
+    margin-right: 10px;
+    font-weight: bold;
+}
+		
+		
+        .nav-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    font-weight: bold;
+}
         .nav-item.active a {
             font-weight: 500;
             color: var(--light);
@@ -272,10 +289,13 @@
         <section id="grundprinzipien" class="section">
             <h2>1. Grundprinzipien des Sender-Empfänger-Modells</h2>
             
-            <p>Das <strong>Sender-Empfänger-Modell</strong> beschreibt die Kommunikation als Übertragung einer Nachricht von einem Sender zu einem Empfänger. Die Hauptprinzipien sind:</p>
+            <p>Das <strong>Sender-Empfänger-Modell</strong> beschreibt die Kommunikation als Übertragung einer Nachricht von einem Sender zu einem Empfänger. </p>
+			<p> Ist dir ein Video lieber? Dann schau dir doch einfach folgendes <a href="https://www.youtube.com/watch?v=x6VsvMx5oBA" target="blank">Erklärvideo</a> an.  </p>
+			<p>Die Hauptprinzipien sind:</p>
             
             <ol>
                 <li><strong>Sender</strong>: Kodiert die Nachricht in eine verständliche Form (z. B. Sprache, Text, Gestik).</li>
+				<li><strong>Nachricht & Signal</strong>: sind der Inhalt der Botschaft und die Form, in der sie übermittelt wird </li>
                 <li><strong>Kanal</strong>: Überträgt die Nachricht (z. B. Sprache, Telefon, E-Mail).</li>
                 <li><strong>Empfänger</strong>: Dekodiert die Nachricht und interpretiert sie.</li>
                 <li><strong>Störungen (Rauschen)</strong>: Können die Nachricht verfälschen oder missverständlich machen.</li>
@@ -315,7 +335,7 @@
             <h4>6. Feedback (Rückkopplung vom Empfänger)</h4>
             <p>Der Empfänger kann durch eine Reaktion oder Rückmeldung (Feedback) zeigen, ob er die Nachricht richtig verstanden hat. Dieses Feedback hilft dem Sender zu erkennen, ob die Kommunikation erfolgreich war oder angepasst werden muss.</p>
             
-            <h4>Fazit</h4>
+            <h1><strong>Fazit</strong></h1>
             <p>Das Sender-Empfänger-Modell veranschaulicht, dass erfolgreiche Kommunikation von klarer Codierung, störungsfreier Übertragung und richtiger Decodierung abhängt. Es zeigt aber auch, dass Missverständnisse oder Störungen leicht auftreten können, weshalb Feedback und Kontext eine große Rolle spielen.</p>
             
             <div class="img-container">
@@ -328,7 +348,7 @@
             <h2>2. Kommunikationsformen</h2>
             
             <p>Bei der Kommunikation unterscheiden wir verschiedene Formen, wie Informationen übermittelt werden:</p>
-            <p> <b> Zu viel Text? Hier ein kurzes <a href="https://www.youtube.com/watch?v=x6VsvMx5oBA">Erklärvideo </b> </a> </p>
+            <p> <b> Zu viel Text? Hier ein kurzes <a href="https://www.youtube.com/watch?v=x6VsvMx5oBA" target="blank">Erklärvideo </b> </a> </p>
             <h3>Verbale Kommunikation</h3>
             <ul>
                 <li>Die gesprochene oder geschriebene Sprache</li>
@@ -871,8 +891,44 @@
             });
         }
     });
+	
+	
+	document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('section');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    function removeActiveClass() {
+        navItems.forEach(item => item.classList.remove('active'));
+    }
+
+    function addActiveClass(id) {
+        const activeNavItem = document.querySelector(`.nav-item a[href="#${id}"]`).parentElement;
+        activeNavItem.classList.add('active');
+    }
+
+    window.addEventListener('scroll', function() {
+        let currentSection = '';
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 60) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+
+        removeActiveClass();
+        if (currentSection) {
+            addActiveClass(currentSection);
+        }
+    });
+});
+	
+	
 </script>
-		
+
+
+
+
 </body>
 </html>
 
