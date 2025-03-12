@@ -159,6 +159,158 @@
         #overlay {
             display: none;
         }
+
+        #exercises-section {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #2a2a2a;
+    color: #f0f0f0;
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+#exercises-section h2 {
+    color: #ff8c00;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.quiz-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.quiz-question {
+    background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.95));
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.quiz-question p {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(60, 60, 60, 0.5);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.option:hover {
+    background: rgba(80, 80, 80, 0.5);
+    border-left: 3px solid rgba(255, 165, 0, 0.6);
+    transform: translateX(3px);
+}
+
+.option input {
+    margin-right: 15px;
+}
+
+.feedback {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    display: none;
+}
+
+.feedback.correct {
+    background: rgba(50, 205, 50, 0.2);
+    border-left: 3px solid #32CD32;
+    color: #98FB98;
+    display: block;
+}
+
+.feedback.incorrect {
+    background: rgba(220, 20, 60, 0.2);
+    border-left: 3px solid #DC143C;
+    color: #FFA07A;
+    display: block;
+}
+
+#quiz-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+#quiz-controls button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+#check-answers {
+    background: linear-gradient(90deg, rgba(255, 165, 0, 0.8), rgba(255, 140, 0, 0.6));
+    color: #fff;
+}
+
+#check-answers:hover {
+    background: linear-gradient(90deg, rgba(255, 165, 0, 0.9), rgba(255, 140, 0, 0.7));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#back-button {
+    background: linear-gradient(90deg, rgba(70, 70, 70, 0.7), rgba(50, 50, 50, 0.7));
+    color: #f0f0f0;
+}
+
+#back-button:hover {
+    background: linear-gradient(90deg, rgba(80, 80, 80, 0.8), rgba(60, 60, 60, 0.8));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+
+        #exercises-section p {
+            margin-bottom: 10px;
+        }
+        #back-button {
+            padding: 12px;
+            background: linear-gradient(90deg, rgba(70, 70, 70, 0.7), rgba(50, 50, 50, 0.7));
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 15px;
+            color: #f0f0f0;
+            transition: all 0.2s;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #back-button:hover {
+            background: linear-gradient(90deg, rgba(80, 80, 80, 0.8), rgba(60, 60, 60, 0.8));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
     </style>
     <script type="importmap">
         {
@@ -178,6 +330,105 @@
         <ul>
         </ul>
         <div id="home-button">Kamera Reset</div>
+    </div>
+
+    <div id="exercises-section">
+        <h2>Übungsaufgaben</h2>
+        
+        <div class="quiz-container">
+            <!-- Question 1: True/False -->
+            <div class="quiz-question">
+                <p><strong>1. Ein 8-Pin CPU Power Anschluss:</strong></p>
+                <div class="quiz-options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="true"> Liefert zusätzliche Energie für die CPU
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="false"> Ist für die Verbindung zur Grafikkarte zuständig
+                    </label>
+                </div>
+                <div class="feedback" id="feedback-q1"></div>
+            </div>
+            
+            <!-- Question 2: Multiple Choice -->
+            <div class="quiz-question">
+                <p><strong>2. Welche Aussage zum AM4 Sockel ist korrekt?</strong></p>
+                <div class="quiz-options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Verwendet die LGA-Architektur mit Pins am Mainboard
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Ist für Intel Core Prozessoren konzipiert
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Verwendet die PGA-Architektur mit Pins am Prozessor
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Der AM4-Sockel wird ausschließlich für High-End-Gaming-PCs genutzt.
+                    </label>
+                </div>
+                <div class="feedback" id="feedback-q2"></div>
+            </div>
+            
+            <!-- Question 3: True/False -->
+            <div class="quiz-question">
+                <p><strong>3. Die CMOS-Batterie auf dem Mainboard:</strong></p>
+                <div class="quiz-options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="true"> Speichert BIOS/UEFI-Einstellungen und hält die Systemuhr aktiv
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="false"> Versorgt die CPU mit Strom, wenn der PC ausgeschaltet ist
+                    </label>
+                </div>
+                <div class="feedback" id="feedback-q3"></div>
+            </div>
+            
+            <!-- Question 4: Multiple Choice -->
+            <div class="quiz-question">
+                <p><strong>4. Was ist ein VRM auf einem Mainboard?</strong></p>
+                <div class="quiz-options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Virtual RAM Module - ein virtueller Arbeitsspeicher
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Video Resolution Manager - steuert die Grafikausgabe
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Voltage Regulator Module - wandelt die Spannung für die CPU herunter
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Variable Resistor Memory - ein Speicherchip für Widerstände
+                    </label>
+                </div>
+                <div class="feedback" id="feedback-q4"></div>
+            </div>
+            
+            <!-- Question 5: Multiple Choice -->
+            <div class="quiz-question">
+                <p><strong>5. Welcher Formfaktor ist der kleinste unter den folgenden?</strong></p>
+                <div class="quiz-options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> ATX
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Micro-ATX
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Mini-ITX
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> E-ATX
+                    </label>
+                </div>
+                <div class="feedback" id="feedback-q5"></div>
+            </div>
+        </div>
+        
+        <div id="quiz-controls">
+            <button id="check-answers">Antworten prüfen</button>
+            <button id="back-button">Zurück zur 3D-Ansicht</button>
+        </div>
     </div>
 
     <script type="module">
@@ -548,7 +799,79 @@
 
         animate();
 
-    </script>	
+        document.getElementById('exercises-button').addEventListener('click', () => {
+            document.getElementById('exercises-section').style.display = 'block';
+            document.getElementById('info').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'none';
+            document.getElementById('exercises-nav').style.display = 'none';
+            document.querySelector('canvas').style.display = 'none';
+            document.getElementById('formfaktor-tab').style.display = 'none';
+        });
+
+        document.getElementById('back-button').addEventListener('click', () => {
+            document.getElementById('exercises-section').style.display = 'none';
+            document.getElementById('info').style.display = 'block';
+            document.getElementById('sidebar').style.display = 'block';
+            document.getElementById('exercises-nav').style.display = 'block';
+            document.querySelector('canvas').style.display = 'block';
+            document.getElementById('formfaktor-tab').style.display = 'block';
+        });
+
+        // Quiz Funktionalität
+        document.getElementById('exercises-button').addEventListener('click', () => {
+            document.getElementById('exercises-section').style.display = 'block';
+            document.getElementById('sidebar').style.display = 'none';
+            document.getElementById('exercises-nav').style.display = 'none';
+            document.querySelector('canvas').style.display = 'none';
+            document.getElementById('formfaktor-tab').style.display = 'none';
+        });
+
+        document.getElementById('back-button').addEventListener('click', () => {
+            document.getElementById('exercises-section').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'block';
+            document.getElementById('exercises-nav').style.display = 'block';
+            document.querySelector('canvas').style.display = 'block';
+            document.getElementById('formfaktor-tab').style.display = 'block';
+        });
+
+        // Quiz Logik
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const questionContainer = e.target.closest('.question-container');
+                questionContainer.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                e.target.classList.add('selected');
+            });
+        });
+
+        document.getElementById('submit-quiz').addEventListener('click', () => {
+            let score = 0;
+            document.querySelectorAll('.question-container').forEach(question => {
+                const selectedOption = question.querySelector('.option.selected');
+                const feedback = question.querySelector('.feedback');
+                const correctAnswer = question.dataset.correct;
+                
+                if (selectedOption) {
+                    const isCorrect = selectedOption.dataset.value === correctAnswer;
+                    feedback.textContent = isCorrect ? 'Richtig!' : 'Falsch. Versuche es noch einmal!';
+                    feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+                    feedback.style.display = 'block';
+                    
+                    if (isCorrect) score++;
+                } else {
+                    feedback.textContent = 'Bitte wähle eine Antwort aus!';
+                    feedback.className = 'feedback incorrect';
+                    feedback.style.display = 'block';
+                }
+            });
+
+            const results = document.getElementById('quiz-results');
+            results.style.display = 'block';
+            results.innerHTML = `<h3>Dein Ergebnis: ${score} von 5 Punkten</h3>`;
+            results.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
 <!-- ATX Form Faktor Info Box und Formfaktor Tab Button zusammen -->
 <div style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 1000;">
     <!-- Formfaktor Tab Button - jetzt über der Info-Box -->
@@ -610,6 +933,87 @@
 </div>
 
 <script>
+
+// Quiz-Funktion für Übungsaufgaben
+document.addEventListener('DOMContentLoaded', function() {
+    const exercisesButton = document.getElementById('exercises-button');
+    const exercisesSection = document.getElementById('exercises-section');
+    const backButton = document.getElementById('back-button');
+    const checkAnswersButton = document.getElementById('check-answers');
+    
+    if (exercisesButton) {
+        exercisesButton.addEventListener('click', function() {
+            // Hide 3D view elements
+            document.querySelector('canvas').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'none';
+            document.getElementById('info').style.display = 'none';
+            document.getElementById('exercises-nav').style.display = 'none';
+            document.getElementById('formfaktor-tab').style.display = 'none';
+            document.getElementById('form-factor-info').style.display = 'none';
+            
+            // Show exercises
+            exercisesSection.style.display = 'block';
+        });
+    }
+    
+    if (backButton) {
+        backButton.addEventListener('click', function() {
+            // Show 3D view elements
+            document.querySelector('canvas').style.display = 'block';
+            document.getElementById('sidebar').style.display = 'block';
+            document.getElementById('info').style.display = 'block';
+            document.getElementById('exercises-nav').style.display = 'block';
+            document.getElementById('formfaktor-tab').style.display = 'block';
+            document.getElementById('form-factor-info').style.display = 'block';
+            
+            // Hide exercises
+            exercisesSection.style.display = 'none';
+            
+            // Reset feedback
+            document.querySelectorAll('.feedback').forEach(el => {
+                el.textContent = '';
+                el.className = 'feedback';
+            });
+        });
+    }
+    
+    // Check answers functionality
+    if (checkAnswersButton) {
+        checkAnswersButton.addEventListener('click', function() {
+            // Define correct answers
+            const correctAnswers = {
+                q1: 'true',
+                q2: 'c',
+                q3: 'true',
+                q4: 'c',
+                q5: 'c'
+            };
+            
+            // Check each question
+            for (let question in correctAnswers) {
+                const selectedOption = document.querySelector(`input[name="${question}"]:checked`);
+                const feedbackElement = document.getElementById(`feedback-${question}`);
+                
+                if (!selectedOption) {
+                    feedbackElement.textContent = 'Bitte wählen Sie eine Antwort aus.';
+                    feedbackElement.className = 'feedback incorrect';
+                    continue;
+                }
+                
+                if (selectedOption.value === correctAnswers[question]) {
+                    feedbackElement.textContent = 'Richtig!';
+                    feedbackElement.className = 'feedback correct';
+                } else {
+                    feedbackElement.textContent = 'Falsch. Bitte versuchen Sie es erneut.';
+                    feedbackElement.className = 'feedback incorrect';
+                }
+            }
+        });
+    }
+});
+
+
+
     // Sofortige Ausführung des Codes ohne DOMContentLoaded zu warten
     (function() {
         // Direktes Hinzufügen der Event-Listener
@@ -825,7 +1229,18 @@
         console.error('Fehler beim Zeichnen des SVG:', error);
     }
 }
-
 </script>
-</body>
+
+   <!-- Übungsaufgaben Button oben -->
+   <div id="exercises-nav" style="position: fixed; top: 0; left: 242px; background: linear-gradient(180deg, rgba(35, 35, 35, 0.95), rgba(25, 25, 25, 0.95)); padding: 10px 20px; border-radius: 0 0 10px 0; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); z-index: 1001; border: 1px solid rgba(255, 255, 255, 0.05);">
+    <div id="exercises-button" style="padding: 12px 15px; background: linear-gradient(90deg, rgba(70, 70, 70, 0.7), rgba(50, 50, 50, 0.7)); border-radius: 8px; cursor: pointer; text-align: center; color: #f0f0f0; transition: all 0.2s; font-weight: 500; border: 1px solid rgba(255, 255, 255, 0.1);">
+        Übungsaufgaben
+    </div>
+</div>
+
+    <div id="info">
+</div>
+       
+        </script>
+        </body>
 </html>
