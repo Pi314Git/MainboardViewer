@@ -22,7 +22,7 @@ This tool is designed for educational purposes, allowing users to understand the
 - SATA Connectors
 - Chipset
 - VRM
-- BIOS Battery ( with inclusion of CMOS-Storage/ (FLASH)-ROM Explanation)
+- BIOS Battery with inclusion of BIOS-CHIP, CMOS-Storage / (FLASH)-ROM Explanation
 - Fan Headers
 - RGB Headers
 - Front Panel Connectors
