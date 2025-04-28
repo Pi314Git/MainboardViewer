@@ -13,7 +13,7 @@ This tool is designed for educational purposes, allowing users to understand the
 - **Responsive Design**: Works on desktops and tablets with varying screen sizes.  
 
 ## Components Documented
-- AM4 Socket
+- AM4 Socket / CPU Socket
 - CPU Power Connectors
 - Motherboard Power Connectors
 - DIMM Slots (RAM)
@@ -22,7 +22,7 @@ This tool is designed for educational purposes, allowing users to understand the
 - SATA Connectors
 - Chipset
 - VRM
-- BIOS Battery
+- BIOS Battery ( with inclusion of CMOS-Storage/ (FLASH)-ROM Explanation)
 - Fan Headers
 - RGB Headers
 - Front Panel Connectors
@@ -31,9 +31,8 @@ This tool is designed for educational purposes, allowing users to understand the
 ## Technical Details
 The application is built using:
 - **[THREE.js](https://threejs.org/)**: For 3D rendering and interactive controls.  
-- **JavaScript ES6+**: For application logic and interactivity.  
-- **HTML5/CSS3**: For UI layout and styling.  
-- **SVG**: For the form factor comparison visualization.  
+- **JavaScript**: For application logic and interactivity.  
+- **HTML5/CSS**: For UI layout and styling.  
 - The 3D model is loaded as a **GLB file**, and the application uses **OrbitControls** from THREE.js to enable intuitive navigation around the model.
 
 ## Credits
