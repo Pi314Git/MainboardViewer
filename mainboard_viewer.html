@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <title>Mainboard 3D Ansicht</title>
     <style>
-        body { 
-            margin: 0; 
-            overflow: hidden; 
+        /* === CSS bleibt unverändert === */
+        body {
+            margin: 0;
+            overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
-            background-color: #2a2a2a;
+            color: #e0dcdc;
+            background-color: #e0dcdc;
         }
-        
+
         /* Moderne Info-Box */
         #info {
             position: absolute;
@@ -23,7 +24,7 @@
             border-radius: 10px;
             max-width: 300px;
             z-index: 1000;
-            overflow: hidden;
+            overflow: hidden; /* Wichtig für die Animation */
             height: auto;
             max-height: 0;
             opacity: 0;
@@ -33,19 +34,83 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             visibility: hidden;
         }
-        
+
         #info.open {
-            max-height: 500px;
+            max-height: 600px; /* Leicht erhöht für den zusätzlichen Inhalt */
             opacity: 1;
             transform: translateY(0);
             visibility: visible;
+            overflow-y: auto; /* Scrollbar hinzufügen, falls Inhalt doch überläuft */
         }
-        
+
+        /* Scrollbar für Info-Box */
+        #info::-webkit-scrollbar {
+           width: 5px;
+        }
+        #info::-webkit-scrollbar-track {
+           background: rgba(0,0,0,0.1);
+        }
+        #info::-webkit-scrollbar-thumb {
+           background: rgba(255,255,255,0.2);
+           border-radius: 3px;
+        }
+        #info::-webkit-scrollbar-thumb:hover {
+           background: rgba(255,255,255,0.3);
+        }
+
+
         #info-content {
             padding-top: 10px;
-            line-height: 1.6;
+            line-height: 1.5; /* Etwas kompakter */
         }
-        
+
+        /* Styling für das <details> Element innerhalb der Info-Box */
+        #info-content details {
+             margin-top: 15px;
+             border-top: 1px solid rgba(255, 255, 255, 0.1);
+             padding-top: 10px;
+        }
+        #info-content summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #ffb86c; /* Helleres Orange für den Titel */
+            outline: none; /* Fokus-Rahmen entfernen */
+            padding-bottom: 5px;
+        }
+        #info-content summary::marker { /* Standard-Pfeil ausblenden */
+            display: none;
+            content: "";
+        }
+        #info-content summary:hover {
+            color: #ffd79c; /* Heller bei Hover */
+        }
+
+        #info-content details > div { /* Inhalt der Details */
+             padding-top: 10px;
+             padding-left: 5px; /* Leichte Einrückung */
+             border-left: 2px solid rgba(255, 184, 108, 0.3); /* Linker Rand für den Inhalt */
+             margin-left: 2px;
+        }
+
+        #info-content h4 {
+             margin-top: 5px;
+             margin-bottom: 8px;
+             color: #f0f0f0;
+             font-size: 1.05em;
+        }
+        #info-content p {
+             margin-bottom: 8px;
+             font-size: 0.95em;
+        }
+        #info-content p strong {
+            color: #ffcc99; /* Hervorhebung für "Historisch" */
+        }
+        #info-content p em {
+            font-style: italic;
+            color: #ffcc99; /* Hervorhebung für "Programm" */
+        }
+
+
         #close-button {
             position: absolute;
             top: 8px;
@@ -55,11 +120,12 @@
             font-size: 1.2em;
             transition: color 0.2s;
         }
-        
+
         #close-button:hover {
             color: white;
         }
-        
+
+        /* === Restliches CSS (Sidebar, Hotspot, Overlay, Quiz, Formfaktor etc.) bleibt unverändert === */
         /* Moderne Sidebar */
         #sidebar {
             position: absolute;
@@ -76,20 +142,20 @@
             transition: transform 0.3s ease;
             border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
+
         #sidebar h3 {
             color: #fff;
             margin-top: 0;
             padding-bottom: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         #sidebar ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        
+
         #sidebar li {
             padding: 12px 15px;
             margin-bottom: 8px;
@@ -100,13 +166,13 @@
             border-left: 3px solid transparent;
             color: #fff;
         }
-        
+
         #sidebar li:hover {
             background: rgba(255, 255, 255, 0.15);
             border-left: 3px solid rgba(255, 165, 0, 0.6);
             transform: translateX(3px);
         }
-        
+
         #sidebar li.active {
             background: linear-gradient(90deg, rgba(255, 165, 0, 0.8), rgba(255, 140, 0, 0.6));
             color: #fff;
@@ -127,189 +193,170 @@
             font-weight: 500;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         #home-button:hover {
             background: linear-gradient(90deg, rgba(80, 80, 80, 0.8), rgba(60, 60, 60, 0.8));
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        
+
         /* Scrollbar für Sidebar */
         #sidebar::-webkit-scrollbar {
             width: 6px;
         }
-        
+
         #sidebar::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.1);
         }
-        
+
         #sidebar::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 3px;
         }
-        
+
         #sidebar::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.3);
         }
-        
+
         .hotspot {
             display: none;
         }
-        
+
         #overlay {
             display: none;
         }
 
         #exercises-section {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #2a2a2a;
-    color: #f0f0f0;
-    z-index: 2000;
-    overflow-y: auto;
-    padding: 40px;
-    box-sizing: border-box;
-}
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #2a2a2a;
+        color: #f0f0f0;
+        z-index: 2000;
+        overflow-y: auto;
+        padding: 40px;
+        box-sizing: border-box;
+    }
 
-#exercises-section h2 {
-    color: #ff8c00;
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 28px;
-}
+    #exercises-section h2 {
+        color: #ff8c00;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 28px;
+    }
 
-.quiz-container {
-    max-width: 800px;
-    margin: 0 auto;
-}
+    .quiz-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
-.quiz-question {
-    background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.95));
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 25px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
+    .quiz-question {
+        background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.95));
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
 
-.quiz-question p {
-    font-size: 18px;
-    margin-top: 0;
-    margin-bottom: 15px;
-}
+    .quiz-question p {
+        font-size: 18px;
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
 
-.quiz-options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+    .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
 
-.option {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    background: rgba(60, 60, 60, 0.5);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-left: 3px solid transparent;
-}
+    .option {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        background: rgba(60, 60, 60, 0.5);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-left: 3px solid transparent;
+    }
 
-.option:hover {
-    background: rgba(80, 80, 80, 0.5);
-    border-left: 3px solid rgba(255, 165, 0, 0.6);
-    transform: translateX(3px);
-}
+    .option:hover {
+        background: rgba(80, 80, 80, 0.5);
+        border-left: 3px solid rgba(255, 165, 0, 0.6);
+        transform: translateX(3px);
+    }
 
-.option input {
-    margin-right: 15px;
-}
+    .option input {
+        margin-right: 15px;
+    }
 
-.feedback {
-    margin-top: 15px;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 500;
-    display: none;
-}
+    .feedback {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 500;
+        display: none;
+    }
 
-.feedback.correct {
-    background: rgba(50, 205, 50, 0.2);
-    border-left: 3px solid #32CD32;
-    color: #98FB98;
-    display: block;
-}
+    .feedback.correct {
+        background: rgba(50, 205, 50, 0.2);
+        border-left: 3px solid #32CD32;
+        color: #98FB98;
+        display: block;
+    }
 
-.feedback.incorrect {
-    background: rgba(220, 20, 60, 0.2);
-    border-left: 3px solid #DC143C;
-    color: #FFA07A;
-    display: block;
-}
+    .feedback.incorrect {
+        background: rgba(220, 20, 60, 0.2);
+        border-left: 3px solid #DC143C;
+        color: #FFA07A;
+        display: block;
+    }
 
-#quiz-controls {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 30px;
-}
+    #quiz-controls {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+    }
 
-#quiz-controls button {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 16px;
-    transition: all 0.2s;
-}
+    #quiz-controls button {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 16px;
+        transition: all 0.2s;
+    }
 
-#check-answers {
-    background: linear-gradient(90deg, rgba(255, 165, 0, 0.8), rgba(255, 140, 0, 0.6));
-    color: #fff;
-}
+    #check-answers {
+        background: linear-gradient(90deg, rgba(255, 165, 0, 0.8), rgba(255, 140, 0, 0.6));
+        color: #fff;
+    }
 
-#check-answers:hover {
-    background: linear-gradient(90deg, rgba(255, 165, 0, 0.9), rgba(255, 140, 0, 0.7));
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
+    #check-answers:hover {
+        background: linear-gradient(90deg, rgba(255, 165, 0, 0.9), rgba(255, 140, 0, 0.7));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
 
-#back-button {
-    background: linear-gradient(90deg, rgba(70, 70, 70, 0.7), rgba(50, 50, 50, 0.7));
-    color: #f0f0f0;
-}
+    #back-button {
+        background: linear-gradient(90deg, rgba(70, 70, 70, 0.7), rgba(50, 50, 50, 0.7));
+        color: #f0f0f0;
+    }
 
-#back-button:hover {
-    background: linear-gradient(90deg, rgba(80, 80, 80, 0.8), rgba(60, 60, 60, 0.8));
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-
+    #back-button:hover {
+        background: linear-gradient(90deg, rgba(80, 80, 80, 0.8), rgba(60, 60, 60, 0.8));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
         #exercises-section p {
             margin-bottom: 10px;
-        }
-        #back-button {
-            padding: 12px;
-            background: linear-gradient(90deg, rgba(70, 70, 70, 0.7), rgba(50, 50, 50, 0.7));
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-            margin-top: 15px;
-            color: #f0f0f0;
-            transition: all 0.2s;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        #back-button:hover {
-            background: linear-gradient(90deg, rgba(80, 80, 80, 0.8), rgba(60, 60, 60, 0.8));
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
     </style>
     <script type="importmap">
@@ -334,9 +381,7 @@
 
     <div id="exercises-section">
         <h2>Übungsaufgaben</h2>
-        
         <div class="quiz-container">
-            <!-- Question 1: True/False -->
             <div class="quiz-question">
                 <p><strong>1. Ein 8-Pin CPU Power Anschluss:</strong></p>
                 <div class="quiz-options">
@@ -349,8 +394,7 @@
                 </div>
                 <div class="feedback" id="feedback-q1"></div>
             </div>
-            
-            <!-- Question 2: Multiple Choice -->
+
             <div class="quiz-question">
                 <p><strong>2. Welche Aussage zum AM4 Sockel ist korrekt?</strong></p>
                 <div class="quiz-options">
@@ -369,13 +413,12 @@
                 </div>
                 <div class="feedback" id="feedback-q2"></div>
             </div>
-            
-            <!-- Question 3: True/False -->
+
             <div class="quiz-question">
-                <p><strong>3. Die CMOS-Batterie auf dem Mainboard:</strong></p>
+                <p><strong>3. Der CMOS/BIOS-Chip auf dem Mainboard:</strong></p>
                 <div class="quiz-options">
                     <label class="option">
-                        <input type="radio" name="q3" value="true"> Speichert BIOS/UEFI-Einstellungen und hält die Systemuhr aktiv
+                        <input type="radio" name="q3" value="true"> Speichert BIOS/UEFI-Einstellungen.
                     </label>
                     <label class="option">
                         <input type="radio" name="q3" value="false"> Versorgt die CPU mit Strom, wenn der PC ausgeschaltet ist
@@ -383,8 +426,7 @@
                 </div>
                 <div class="feedback" id="feedback-q3"></div>
             </div>
-            
-            <!-- Question 4: Multiple Choice -->
+
             <div class="quiz-question">
                 <p><strong>4. Was ist ein VRM auf einem Mainboard?</strong></p>
                 <div class="quiz-options">
@@ -403,8 +445,7 @@
                 </div>
                 <div class="feedback" id="feedback-q4"></div>
             </div>
-            
-            <!-- Question 5: Multiple Choice -->
+
             <div class="quiz-question">
                 <p><strong>5. Welcher Formfaktor ist der kleinste unter den folgenden?</strong></p>
                 <div class="quiz-options">
@@ -424,7 +465,7 @@
                 <div class="feedback" id="feedback-q5"></div>
             </div>
         </div>
-        
+
         <div id="quiz-controls">
             <button id="check-answers">Antworten prüfen</button>
             <button id="back-button">Zurück zur 3D-Ansicht</button>
@@ -432,17 +473,18 @@
     </div>
 
     <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js';
-    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/controls/OrbitControls.js';
-    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/loaders/GLTFLoader.js';
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/loaders/GLTFLoader.js';
 
+        // === THREE.js Initialisierung und Lichter bleiben unverändert ===
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         document.body.appendChild(renderer.domElement);
-        scene.background = new THREE.Color(0x2a2a2a);
+        scene.background = new THREE.Color(0xcccccc);
 
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
         scene.add(ambientLight);
@@ -461,87 +503,105 @@
         controls.maxDistance = 200; // Max zoom distanz
         controls.enableRotate = true; // Rotation an/aus
         controls.rotateSpeed = 0.8; // Rotationspeed
-        controls.maxPolarAngle = Math.PI; // Full rotation 
+        controls.maxPolarAngle = Math.PI; // Full rotation
         controls.minPolarAngle = 0; // Full rotation 2
+
 
         // Alle Hotspot sachen
         const hotspotsData = [
-            { 
-                name: "8-Pin CPU Power", 
-                objectNames: ["8PinPow"], 
-                info: "Dies ist der 8-Pin-EPS-Anschluss. Er liefert zusätzliche Energie für die CPU. Besonders wichtig bei Hochleistungs-CPUs oder beim Übertakten, um stabile Stromversorgung zu gewährleisten." 
+             {
+                name: "8-Pin CPU Stromanschluss",
+                objectNames: ["8PinPow"],
+                info: "Dies ist der 8-Pin-EPS-Anschluss. Er liefert zusätzliche Energie für die CPU. Besonders wichtig bei Hochleistungs-CPUs oder beim Übertakten, um stabile Stromversorgung zu gewährleisten."
             },
-            { 
-                name: "24-Pin Motherboard Power", 
-                objectNames: ["24Pin"], 
-                info: "Dies ist der 24-Pin-ATX-Anschluss. Er ist der Hauptstromanschluss für das Mainboard und versorgt die meisten Komponenten mit Strom. Manche High-End-Mainboards von ASUS, MSI oder GIGABYTE haben zusätzliche Stromanschlüsse." 
+            {
+                name: "24-Pin Mainboard Stromanschluss",
+                objectNames: ["24Pin"],
+                info: "Dies ist der 24-Pin-ATX-Anschluss. Er ist der Hauptstromanschluss für das Mainboard und versorgt die meisten Komponenten mit Strom. Manche High-End-Mainboards von ASUS, MSI oder GIGABYTE haben zusätzliche Stromanschlüsse."
             },
-            { 
-                name: "AM4 Sockel", 
-                objectNames: ["AM4Text", "Am4Sockel"], 
-                info: "Dies ist der AM4-Sockel für AMD Ryzen-Prozessoren. AMD verwendet hier die PGA-Architektur (Pin Grid Array), bei der die Pins am Prozessor selbst und nicht am Mainboard angebracht sind, im Unterschied zur LGA-Architektur (Land Grid Array) von Intel. AM4 unterstützt mehrere Generationen von Ryzen-Prozessoren." 
+            {
+                name: "AM4 Sockel",
+                objectNames: ["AM4Text", "Am4Sockel"],
+                info: "Dies ist der AM4-Sockel für AMD Ryzen-Prozessoren. AMD verwendet hier die PGA-Architektur (Pin Grid Array), bei der die Pins am Prozessor selbst und nicht am Mainboard angebracht sind, im Unterschied zur LGA-Architektur (Land Grid Array) von Intel. AM4 unterstützt mehrere Generationen von Ryzen-Prozessoren."
             },
-            { 
-                name: "BIOS Battery", 
-                objectNames: ["BIOSBattery1", "BIOSBattery2"], 
-                info: "Dies ist die CMOS-Batterie (CR2032-Knopfzelle). Sie speichert BIOS/UEFI-Einstellungen wie Boot-Reihenfolge und Hardware-Konfiguration, hält die Systemuhr aktiv, auch wenn der PC ausgeschaltet ist, und verhindert Datenverlust bei Stromausfall für BIOS-Einstellungen. Die Batterie hält typischerweise mehrere Jahre." 
+            {
+                name: "BIOS Battery",
+                objectNames: ["BIOSBattery1", "BIOSBattery2"],
+                // --- START: Geänderter Info-Text für BIOS Battery ---
+                info: `
+                    Dies ist die CMOS-Batterie (oft eine CR2032 Knopfzelle). Sie versorgt den CMOS-Speicher mit Strom, wenn der Computer ausgeschaltet ist. Dadurch bleiben wichtige System-Einstellungen wie Datum, Uhrzeit und Boot-Reihenfolge erhalten.
+                    <details>
+                        <summary>Mehr über CMOS-Speicher und (Flash)-ROM <span style="font-size: 0.8em;">▼</span></summary>
+                        <div>
+                            <h4>CMOS-Speicher</h4>
+                            <p>Der CMOS-Speicher (Complementary Metal-Oxide-Semiconductor) ist ein kleiner, batteriegepufferter RAM-Speicherbereich auf dem Mainboard.</p>
+                            <p>Hier werden die Konfigurationseinstellungen des BIOS/UEFI gespeichert (z.B. Boot-Reihenfolge, Hardware-Parameter, Datum/Uhrzeit).</p>
+                            <p>Da es flüchtiger Speicher (RAM) ist, benötigt er die Batterie, um die Daten bei ausgeschaltetem PC zu halten. Ohne Strom gehen die Einstellungen verloren.</p>
+
+                            <h4>(Flash-)ROM / BIOS/UEFI-Chip</h4>
+                            <p>Auf einem separaten Chip (heute meist Flash-ROM) ist die eigentliche Firmware (BIOS oder UEFI) gespeichert – das Programm, das den PC startet.</p>
+                            <p>Im Gegensatz zum CMOS (Einstellungen) enthält dieser Chip das <em>Programm</em> selbst.</p>
+                            <p>Dank Flash-Speicher kann die Firmware aktualisiert werden ('BIOS-Flash').</p>
+                            <p><strong>Historisch:</strong> Früher wurde die Firmware auf ROM-Chips (Read-Only Memory) gespeichert, die nicht oder nur schwer aktualisierbar waren.</p>
+                        </div>
+                    </details>
+                `
+                // --- END: Geänderter Info-Text für BIOS Battery ---
             },
-            { 
-                name: "Chipsatz", 
-                objectNames: ["Chipset1", "Chipset2", "Cube"], 
-                info: "Dies ist der Chipsatz des Mainboards (in diesem Fall unter einem Kühlblock versteckt). Er steuert die Kommunikation zwischen CPU, RAM und Peripheriegeräten und verwaltet die PCIe-Lanes. Moderne Chipsätze wie AMD X570/B550 oder Intel Z790/B660 bestimmen, welche Technologien (PCIe 4.0/5.0, DDR4/DDR5) unterstützt werden. Früher war der Chipsatz in Northbridge und Southbridge aufgeteilt." 
+            {
+                name: "Chipsatz",
+                objectNames: ["Chipset1", "Chipset2", "Cube"],
+                info: "Dies ist der Chipsatz des Mainboards (in diesem Fall unter einem Kühlblock versteckt). Er steuert die Kommunikation zwischen CPU, RAM und Peripheriegeräten und verwaltet die PCIe-Lanes. Moderne Chipsätze wie AMD X570/B550 oder Intel Z790/B660 bestimmen, welche Technologien (PCIe 4.0/5.0, DDR4/DDR5) unterstützt werden. Früher war der Chipsatz in Northbridge und Southbridge aufgeteilt."
             },
-            { 
-                name: "DIMM Slots / RAM", 
-                objectNames: ["DIMM"], 
-                info: "Dies sind die DIMM-Slots für RAM-Module. Moderne Mainboards unterstützen je nach Chipsatz DDR4 oder DDR5 RAM. Die Anzahl der Slots variiert je nach Mainboard-Typ (meist 2-4 auf Consumer-Boards, mehr auf High-End- oder Server-Boards)." 
+            {
+                name: "DIMM Slots / RAM",
+                objectNames: ["DIMM"],
+                info: "Dies sind die DIMM-Slots für RAM-Module. Moderne Mainboards unterstützen je nach Chipsatz DDR4 oder DDR5 RAM. Die Anzahl der Slots variiert je nach Mainboard-Typ (meist 2-4 auf Consumer-Boards, mehr auf High-End- oder Server-Boards)."
             },
-            { 
-                name: "Fan Headers", 
-                objectNames: ["FanHeadersTest1"], 
-                info: "Dies sind die Anschlüsse für Gehäuselüfter und CPU-Lüfter. Sie ermöglichen die Steuerung der Lüftergeschwindigkeit durch das BIOS/UEFI. Mainboards von ASUS, MSI und GIGABYTE bieten oft spezielle Lüftersteuerungssoftware für präzisere Kontrolle." 
+            {
+                name: "Fan Headers",
+                objectNames: ["FanHeadersTest1"],
+                info: "Dies sind die Anschlüsse für Gehäuselüfter und CPU-Lüfter. Sie ermöglichen die Steuerung der Lüftergeschwindigkeit durch das BIOS/UEFI. Mainboards von ASUS, MSI und GIGABYTE bieten oft spezielle Lüftersteuerungssoftware für präzisere Kontrolle."
             },
-            { 
-                name: "Front Connectors", 
-                objectNames: ["Front1", "Front2"], 
-                info: "Hier werden die Anschlüsse des Gehäusefrontpanels angeschlossen (Power-Button, Reset-Button, HDD-LEDs, USB, Audio). Die Pinbelegung variiert je nach Hersteller, daher ist es wichtig, das Mainboard-Handbuch zu konsultieren." 
+            {
+                name: "Front Connectors",
+                objectNames: ["Front1", "Front2"],
+                info: "Hier werden die Anschlüsse des Gehäusefrontpanels angeschlossen (Power-Button, Reset-Button, HDD-LEDs, USB, Audio). Die Pinbelegung variiert je nach Hersteller, daher ist es wichtig, das Mainboard-Handbuch zu konsultieren."
             },
-            { 
-                name: "M.2 Slot", 
-                objectNames: ["M2Pins", "M2Slot","M2Standoff1","M2Standoff2"], 
-                info: "Dies ist ein M.2-Steckplatz für schnelle SSDs. Er unterstützt NVMe- und SATA-SSDs. NVMe-SSDs nutzen PCIe-Lanes und bieten deutlich höhere Geschwindigkeiten als SATA. Moderne Chipsätze wie AMD X570 oder Intel Z790 bieten PCIe 4.0/5.0 M.2-Slots mit Geschwindigkeiten bis zu 14 GB/s." 
+            {
+                name: "M.2 Slot",
+                objectNames: ["M2Pins", "M2Slot","M2Standoff1","M2Standoff2"],
+                info: "Dies ist ein M.2-Steckplatz für schnelle SSDs. Er unterstützt NVMe- und SATA-SSDs. NVMe-SSDs nutzen PCIe-Lanes und bieten deutlich höhere Geschwindigkeiten als SATA. Moderne Chipsätze wie AMD X570 oder Intel Z790 bieten PCIe 4.0/5.0 M.2-Slots mit Geschwindigkeiten bis zu 14 GB/s."
             },
-            { 
-                name: "PCIe 1x", 
-                objectNames: ["PCIE11"], 
-                info: "Dies sind PCIe-x1-Steckplätze für Erweiterungskarten. Sie bieten eine geringere Bandbreite als die größeren PCIe-Slots und werden typischerweise für Netzwerkkarten, Sound-Karten oder kleinere Erweiterungen verwendet. PCIe (Peripheral Component Interconnect Express) ist eine Hochgeschwindigkeits-Schnittstelle für Kommunikation zwischen Mainboard und Erweiterungskarten." 
+            {
+                name: "PCIe 1x",
+                objectNames: ["PCIE11"],
+                info: "Dies sind PCIe-x1-Steckplätze für Erweiterungskarten. Sie bieten eine geringere Bandbreite als die größeren PCIe-Slots und werden typischerweise für Netzwerkkarten, Sound-Karten oder kleinere Erweiterungen verwendet. PCIe (Peripheral Component Interconnect Express) ist eine Hochgeschwindigkeits-Schnittstelle für Kommunikation zwischen Mainboard und Erweiterungskarten."
             },
-            { 
-                name: "PCIe Slot 16x", 
-                objectNames: ["PCIESlot3", "PCIESlot2", "PCIESlot1"], 
-                info: "Dies ist ein PCIe-x16-Steckplatz. Er wird typischerweise für Grafikkarten oder andere Erweiterungskarten mit hoher Bandbreite verwendet. PCIe 4.0/5.0 x16-Slots bieten massive Bandbreite für modernste Grafikkarten. Die genaue Anzahl der elektrisch angebundenen Lanes kann je nach CPU und Chipsatz variieren." 
+            {
+                name: "PCIe Slot 16x",
+                objectNames: ["PCIESlot3", "PCIESlot2", "PCIESlot1"],
+                info: "Dies ist ein PCIe-x16-Steckplatz. Er wird typischerweise für Grafikkarten oder andere Erweiterungskarten mit hoher Bandbreite verwendet. PCIe 4.0/5.0 x16-Slots bieten massive Bandbreite für modernste Grafikkarten. Die genaue Anzahl der elektrisch angebundenen Lanes kann je nach CPU und Chipsatz variieren."
             },
-           
-            { 
-                name: "RGB Header", 
-                objectNames: ["RGBHeader"], 
-                info: "Dies ist ein Anschluss für RGB-Beleuchtung. Hier können Sie RGB-Lüfter, -Streifen oder andere Beleuchtungselemente anschließen. Mainboard-Hersteller wie ASUS (Aura Sync), MSI (Mystic Light) und GIGABYTE (RGB Fusion) haben eigene RGB-Steuerungssoftware." 
+            {
+                name: "RGB Header",
+                objectNames: ["RGBHeader"],
+                info: "Dies ist ein Anschluss für RGB-Beleuchtung. Hier können Sie RGB-Lüfter, -Streifen oder andere Beleuchtungselemente anschließen. Mainboard-Hersteller wie ASUS (Aura Sync), MSI (Mystic Light) und GIGABYTE (RGB Fusion) haben eigene RGB-Steuerungssoftware."
             },
-            { 
-                name: "SATA Anschlüsse", 
-                objectNames: ["SATA"], 
-                info: "Dies sind SATA-Anschlüsse für Festplatten und SSDs. Sie bieten eine geringere Bandbreite (bis zu 600 MB/s) als M.2-NVMe-SSDs. Die Anzahl der SATA-Ports variiert je nach Chipsatz, wobei einige Ports deaktiviert werden können, wenn bestimmte M.2-Slots verwendet werden." 
+            {
+                name: "SATA Anschlüsse",
+                objectNames: ["SATA"],
+                info: "Dies sind SATA-Anschlüsse für Festplatten und SSDs. Sie bieten eine geringere Bandbreite (bis zu 600 MB/s) als M.2-NVMe-SSDs. Die Anzahl der SATA-Ports variiert je nach Chipsatz, wobei einige Ports deaktiviert werden können, wenn bestimmte M.2-Slots verwendet werden."
             },
-            { 
-                name: "I/O Inputs", 
-                objectNames: ["IO"], 
-                info: "Dies ist das I/O-Panel. Hier befinden sich die Anschlüsse für externe Geräte wie USB, Audio, Netzwerk, DisplayPort, HDMI und andere. Die genaue Ausstattung variiert je nach Mainboard-Modell und Preisklasse." 
+            {
+                name: "I/O Inputs",
+                objectNames: ["IO"],
+                info: "Dies ist das I/O-Panel. Hier befinden sich die Anschlüsse für externe Geräte wie USB, Audio, Netzwerk, DisplayPort, HDMI und andere. Die genaue Ausstattung variiert je nach Mainboard-Modell und Preisklasse."
             },
-            
-            { 
-                name: "VRM", 
-                objectNames: ["VRMDing"], 
-                info: "Dies ist der VRM (Voltage Regulator Module) Bereich. Er wandelt die Spannung für die CPU herunter und stellt eine stabile Stromversorgung sicher. Besonders wichtig für Übertaktung und Systemstabilität. High-End-Mainboards von ASUS, MSI und GIGABYTE haben oft robustere VRM-Designs mit mehr Phasen für bessere Stabilität bei Übertaktung." 
+            {
+                name: "VRM",
+                objectNames: ["VRMDing"],
+                info: "Dies ist der VRM (Voltage Regulator Module) Bereich. Er wandelt die Spannung für die CPU herunter und stellt eine stabile Stromversorgung sicher. Besonders wichtig für Übertaktung und Systemstabilität. High-End-Mainboards von ASUS, MSI und GIGABYTE haben oft robustere VRM-Designs mit mehr Phasen für bessere Stabilität bei Übertaktung."
             }
         ];
 
@@ -577,18 +637,16 @@
                 loadedModel.position.x = -mainboardCenter.x;
                 loadedModel.position.y = -mainboardCenter.y;
                 loadedModel.position.z = -mainboardCenter.z;
-                
+
                 const maxDim = Math.max(mainboardSize.x, mainboardSize.y, mainboardSize.z);
                 const fov = camera.fov * (Math.PI / 180);
                 let cameraZ = Math.abs(maxDim / (2 * Math.tan(fov / 2)));
-                
-                // Weiter herausgezoomte Kameraposition beim Start
-                cameraZ *= 1.8; // je höher desto weiter 
-                
+
+                cameraZ *= 1.8; // je höher desto weiter
+
                 console.log("Mainboard Center:", mainboardCenter);
                 console.log("Camera Z Position:", cameraZ);
 
-                // Kameraposi gesamt
                 camera.position.set(0, 2, cameraZ);
                 camera.lookAt(0, 0, 0);
                 controls.target.set(0, 0, 0);
@@ -601,9 +659,7 @@
                 logSceneHierarchy(scene);
                 console.log("--- End Scene Hierarchy ---");
 
-                // Cube finden und ausblenden
                 findAndHideCube();
-
                 populateSidebar();
             },
             undefined,
@@ -612,7 +668,6 @@
             }
         );
 
-        // Funktion für cube hide and seek
         function findAndHideCube() {
             if (!loadedModel) return;
 
@@ -627,7 +682,7 @@
             }
 
             cubeObject = findObjectByNameRecursive("Cube", loadedModel);
-            
+
             if (cubeObject) {
                 console.log("Cube-Objekt gefunden, wird ausgeblendet:", cubeObject);
                 cubeObject.visible = false;
@@ -639,10 +694,9 @@
         function populateSidebar() {
             const sidebarList = document.querySelector('#sidebar ul');
             sidebarList.innerHTML = '';
-            
-            // Name Sorting Kacheln
+
             const sortedHotspots = [...hotspotsData].sort((a, b) => a.name.localeCompare(b.name));
-            
+
             sortedHotspots.forEach(hotspotData => {
                 const li = document.createElement('li');
                 li.textContent = hotspotData.name;
@@ -657,19 +711,17 @@
             if (currentHotspot) {
                 setActiveHotspot(currentHotspot, false);
                 highlightObjects(currentHotspot.objectNames, false);
-                
-                // Chipsatz If dings 1
+
                 if (currentHotspot.name === "Chipsatz" && cubeObject) {
                     cubeObject.visible = false;
                 }
             }
-            
+
             currentHotspot = hotspotData;
             setActiveHotspot(hotspotData, true);
-            displayInfo(hotspotData.info);
+            displayInfo(hotspotData.info); // Ruft die geänderte displayInfo Funktion auf
             highlightObjects(hotspotData.objectNames, true);
-            
-            // Chipsatz if dings 2
+
             if (hotspotData.name === "Chipsatz" && cubeObject) {
                 cubeObject.visible = true;
                 console.log("Cube-Objekt wird angezeigt, da Chipsatz ausgewählt wurde");
@@ -691,76 +743,96 @@
         }
 
         function highlightObjects(objectNames, highlight) {
-            if (!loadedModel) return;
+             if (!loadedModel) return;
 
-            function findObjectByNameRecursive(objectName, root) {
-                let foundObject = null;
-                root.traverse(function(object) {
-                    if (object.name === objectName) {
-                        foundObject = object;
-                    }
-                });
-                return foundObject;
-            }
+             function findObjectByNameRecursive(objectName, root) {
+                 let foundObject = null;
+                 root.traverse(function(object) {
+                     if (object.name === objectName) {
+                         foundObject = object;
+                     }
+                 });
+                 return foundObject;
+             }
 
-            function findFirstMeshChildRecursive(object) {
-                if (object.type === 'Mesh') {
-                    return object;
-                }
-                if (object.children) {
-                    for (const child of object.children) {
-                        const meshChild = findFirstMeshChildRecursive(child);
-                        if (meshChild) {
-                            return meshChild;
-                        }
-                    }
-                }
-                return null;
-            }
+             function findFirstMeshChildRecursive(object) {
+                 if (object.type === 'Mesh') {
+                     return object;
+                 }
+                 if (object.children) {
+                     for (const child of object.children) {
+                         const meshChild = findFirstMeshChildRecursive(child);
+                         if (meshChild) {
+                             return meshChild;
+                         }
+                     }
+                 }
+                 return null;
+             }
 
-            objectNames.forEach(objectName => {
-                const containerObject = findObjectByNameRecursive(objectName, loadedModel);
+             objectNames.forEach(objectName => {
+                 const containerObject = findObjectByNameRecursive(objectName, loadedModel);
 
-                if (containerObject) {
-                    const meshObject = findFirstMeshChildRecursive(containerObject);
+                 if (containerObject) {
+                     const meshObject = findFirstMeshChildRecursive(containerObject);
 
-                    if (meshObject && meshObject.material) {
-                        console.log(`[DEBUG] Container-Objekt "${objectName}" gefunden (Typ: ${containerObject.type}). Mesh-Kind gefunden (Typ: ${meshObject.type}) mit Material:`, meshObject.material);
+                     if (meshObject && meshObject.material) {
+                         console.log(`[DEBUG] Container-Objekt "${objectName}" gefunden (Typ: ${containerObject.type}). Mesh-Kind gefunden (Typ: ${meshObject.type}) mit Material:`, meshObject.material);
 
-                        if (highlight) {
-                             
-                            meshObject.userData.originalColor = meshObject.material.color.clone();
-                            meshObject.material.color.set(0xFFD700); // Neue Farbe: Gelb Test 
-                            console.log(`[HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf GELB gesetzt!`);
-                        } else {
-                            if (meshObject.userData.originalColor) {
-                                meshObject.material.color.copy(meshObject.userData.originalColor);
-                                console.log(`[DE-HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf Originalfarbe zurückgesetzt.`);
-                            }
-                        }
-                    } else {
-                        console.warn(`[WARNUNG] Mesh-Objekt oder Material unter Container-Objekt "${objectName}" NICHT gefunden!`);
-                        if (!meshObject) {
-                            console.warn(`[DETAIL] Kein Mesh-Kind unter "${objectName}" gefunden.`);
-                        } else if (!meshObject.material) {
-                            console.warn(`[DETAIL] Mesh-Kind "${meshObject.name}" gefunden, aber ohne Material!`);
-                        }
-                    }
-                } else {
-                    console.warn(`Objekt-Container "${objectName}" NICHT gefunden! (rekursiv gesucht)`);
-                }
-            });
-        }
+                         if (highlight) {
+                             // Store original color only if not already stored
+                             if (!meshObject.userData.originalColor) {
+                                 meshObject.userData.originalColor = meshObject.material.color.clone();
+                             }
+                             meshObject.material.color.set(0xFFD700); // Highlight color: Gold/Yellow
+                             console.log(`[HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf HIGHLIGHT gesetzt!`);
+                         } else {
+                             if (meshObject.userData.originalColor) {
+                                 meshObject.material.color.copy(meshObject.userData.originalColor);
+                                 // Remove stored color after restoring
+                                 delete meshObject.userData.originalColor;
+                                 console.log(`[DE-HIGHLIGHT] Farbe von Mesh-Objekt unter "${objectName}" auf Originalfarbe zurückgesetzt.`);
+                             } else {
+                                console.log(`[DE-HIGHLIGHT] Keine Originalfarbe für Mesh-Objekt unter "${objectName}" gespeichert.`);
+                             }
+                         }
+                     } else {
+                         console.warn(`[WARNUNG] Mesh-Objekt oder Material unter Container-Objekt "${objectName}" NICHT gefunden!`);
+                         if (!meshObject) {
+                             console.warn(`[DETAIL] Kein Mesh-Kind unter "${objectName}" gefunden.`);
+                         } else if (!meshObject.material) {
+                             console.warn(`[DETAIL] Mesh-Kind "${meshObject.name}" gefunden, aber ohne Material!`);
+                         }
+                     }
+                 } else {
+                     console.warn(`Objekt-Container "${objectName}" NICHT gefunden! (rekursiv gesucht)`);
+                 }
+             });
+         }
 
-        function displayInfo(info) {
+
+        // --- START: Angepasste displayInfo Funktion ---
+        function displayInfo(infoHtml) { // Parameter umbenannt, da es jetzt HTML ist
             const infoDiv = document.getElementById('info');
             const infoContent = document.getElementById('info-content');
-            infoContent.textContent = info;
+            infoContent.innerHTML = infoHtml; // ÄNDERUNG: .innerHTML statt .textContent
+            infoDiv.scrollTop = 0; // Nach oben scrollen, wenn neuer Inhalt kommt
             infoDiv.classList.add('open');
         }
+        // --- END: Angepasste displayInfo Funktion ---
+
 
         document.getElementById('close-button').addEventListener('click', () => {
             document.getElementById('info').classList.remove('open');
+            // Optional: De-highlight beim Schließen der Box
+            if (currentHotspot) {
+                 setActiveHotspot(currentHotspot, false);
+                 highlightObjects(currentHotspot.objectNames, false);
+                 if (currentHotspot.name === "Chipsatz" && cubeObject) {
+                    cubeObject.visible = false;
+                 }
+                 currentHotspot = null;
+            }
         });
 
         document.getElementById('home-button').addEventListener('click', () => {
@@ -770,12 +842,11 @@
             if (currentHotspot) {
                 setActiveHotspot(currentHotspot, false);
                 highlightObjects(currentHotspot.objectNames, false);
-                
-                // Home = No cube 
+
                 if (currentHotspot.name === "Chipsatz" && cubeObject) {
                     cubeObject.visible = false;
                 }
-                
+
                 currentHotspot = null;
             }
             document.getElementById('info').classList.remove('open');
@@ -799,448 +870,335 @@
 
         animate();
 
-        document.getElementById('exercises-button').addEventListener('click', () => {
-            document.getElementById('exercises-section').style.display = 'block';
-            document.getElementById('info').style.display = 'none';
-            document.getElementById('sidebar').style.display = 'none';
-            document.getElementById('exercises-nav').style.display = 'none';
-            document.querySelector('canvas').style.display = 'none';
-            document.getElementById('formfaktor-tab').style.display = 'none';
-        });
+        // === Event Listener für Übungsaufgaben und Zurück-Button bleiben unverändert ===
+        const exercisesButton = document.getElementById('exercises-button');
+        const exercisesSection = document.getElementById('exercises-section');
+        const backButton = document.getElementById('back-button'); // Back-Button im Quiz-Bereich
 
-        document.getElementById('back-button').addEventListener('click', () => {
-            document.getElementById('exercises-section').style.display = 'none';
-            document.getElementById('info').style.display = 'block';
-            document.getElementById('sidebar').style.display = 'block';
-            document.getElementById('exercises-nav').style.display = 'block';
-            document.querySelector('canvas').style.display = 'block';
-            document.getElementById('formfaktor-tab').style.display = 'block';
-        });
+        if (exercisesButton) {
+            exercisesButton.addEventListener('click', () => {
+                document.getElementById('exercises-section').style.display = 'block';
+                document.getElementById('info').style.display = 'none';
+                document.getElementById('sidebar').style.display = 'none';
+                document.getElementById('exercises-nav').style.display = 'none';
+                document.querySelector('canvas').style.display = 'none';
+                document.getElementById('formfaktor-tab').style.display = 'none';
+                document.getElementById('form-factor-info').style.display = 'none'; // Formfaktor-Info auch ausblenden
+            });
+        }
 
-        // Quiz Funktionalität
-        document.getElementById('exercises-button').addEventListener('click', () => {
-            document.getElementById('exercises-section').style.display = 'block';
-            document.getElementById('sidebar').style.display = 'none';
-            document.getElementById('exercises-nav').style.display = 'none';
-            document.querySelector('canvas').style.display = 'none';
-            document.getElementById('formfaktor-tab').style.display = 'none';
-        });
+        if (backButton) {
+             backButton.addEventListener('click', () => {
+                document.getElementById('exercises-section').style.display = 'none';
+                document.getElementById('info').style.display = 'block'; // Sichtbarkeit wiederherstellen
+                document.getElementById('sidebar').style.display = 'block';
+                document.getElementById('exercises-nav').style.display = 'block';
+                document.querySelector('canvas').style.display = 'block';
+                document.getElementById('formfaktor-tab').style.display = 'block';
+                document.getElementById('form-factor-info').style.display = 'block'; // Formfaktor-Info auch wieder einblenden
 
-        document.getElementById('back-button').addEventListener('click', () => {
-            document.getElementById('exercises-section').style.display = 'none';
-            document.getElementById('sidebar').style.display = 'block';
-            document.getElementById('exercises-nav').style.display = 'block';
-            document.querySelector('canvas').style.display = 'block';
-            document.getElementById('formfaktor-tab').style.display = 'block';
-        });
+                 // Reset feedback
+                 document.querySelectorAll('.feedback').forEach(el => {
+                     el.textContent = '';
+                     el.className = 'feedback';
+                     el.style.display = 'none'; // Wichtig: Feedback wieder ausblenden
+                 });
+             });
+        }
+
 
         // Quiz Logik
-        document.querySelectorAll('.option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                const questionContainer = e.target.closest('.question-container');
-                questionContainer.querySelectorAll('.option').forEach(opt => {
-                    opt.classList.remove('selected');
-                });
-                e.target.classList.add('selected');
-            });
-        });
+        const checkAnswersButton = document.getElementById('check-answers');
+        if (checkAnswersButton) {
+            checkAnswersButton.addEventListener('click', function() {
+                 const correctAnswers = { q1: 'true', q2: 'c', q3: 'true', q4: 'c', q5: 'c' };
+                 for (let question in correctAnswers) {
+                     const selectedOption = document.querySelector(`input[name="${question}"]:checked`);
+                     const feedbackElement = document.getElementById(`feedback-${question}`);
+                     if (!selectedOption) {
+                         feedbackElement.textContent = 'Bitte wählen Sie eine Antwort aus.';
+                         feedbackElement.className = 'feedback incorrect';
+                         continue;
+                     }
+                     if (selectedOption.value === correctAnswers[question]) {
+                         feedbackElement.textContent = 'Richtig!';
+                         feedbackElement.className = 'feedback correct';
+                     } else {
+                         feedbackElement.textContent = 'Falsch. Bitte versuchen Sie es erneut.';
+                         feedbackElement.className = 'feedback incorrect';
+                     }
+                 }
+             });
+        }
 
-        document.getElementById('submit-quiz').addEventListener('click', () => {
-            let score = 0;
-            document.querySelectorAll('.question-container').forEach(question => {
-                const selectedOption = question.querySelector('.option.selected');
-                const feedback = question.querySelector('.feedback');
-                const correctAnswer = question.dataset.correct;
-                
-                if (selectedOption) {
-                    const isCorrect = selectedOption.dataset.value === correctAnswer;
-                    feedback.textContent = isCorrect ? 'Richtig!' : 'Falsch. Versuche es noch einmal!';
-                    feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
-                    feedback.style.display = 'block';
-                    
-                    if (isCorrect) score++;
-                } else {
-                    feedback.textContent = 'Bitte wähle eine Antwort aus!';
-                    feedback.className = 'feedback incorrect';
-                    feedback.style.display = 'block';
-                }
-            });
 
-            const results = document.getElementById('quiz-results');
-            results.style.display = 'block';
-            results.innerHTML = `<h3>Dein Ergebnis: ${score} von 5 Punkten</h3>`;
-            results.scrollIntoView({ behavior: 'smooth' });
-        });
     </script>
-<!-- ATX Form Faktor Info Box und Formfaktor Tab Button zusammen -->
-<div style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 1000;">
-    <!-- Formfaktor Tab Button - jetzt über der Info-Box -->
-    <div id="formfaktor-tab" style="background: linear-gradient(90deg, rgba(255, 165, 0, 0.8), rgba(255, 140, 0, 0.6)); color: #fff; padding: 10px 15px; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); transition: all 0.2s; font-weight: 500;">
-        Formfaktor-Vergleich
-    </div>
 
-    <!-- ATX Form Faktor Info Box -->
-    <div id="form-factor-info" style="background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.95)); color: #f0f0f0; padding: 10px 15px; border-radius: 10px; font-size: 14px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);">
-        <a href="https://rog.asus.com/de/motherboards/rog-strix/rog-strix-x370-f-gaming-model/spec/" target="_blank" style="color: #ff8c00; text-decoration: none; transition: color 0.2s;">ASUS ROG STRIX X370-F GAMING Mainboard</a> (ATX Form Faktor: 12 inch × 9.6 inch (30.5 cm × 24.4 cm)
-    </div>
-</div>
-
-<!-- Formfaktor Vergleich Overlay -->
-<div id="formfactor-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 2000; display: none; justify-content: center; align-items: center; overflow: hidden;">
-    <div style="position: relative; width: 90%; max-width: 900px; max-height: 90vh; background: linear-gradient(145deg, rgba(40, 40, 40, 0.95), rgba(25, 25, 25, 0.98)); border-radius: 15px; padding: 30px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); color: #f0f0f0; border: 1px solid rgba(255, 255, 255, 0.1); overflow-y: auto;">
-        <div id="close-formfactor" style="position: sticky; top: 0; float: right; font-size: 24px; cursor: pointer; color: #aaa; transition: color 0.2s; z-index: 10;">&#10006;</div>
-        <h2 style="margin-top: 0; color: #ff8c00; text-align: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255, 165, 0, 0.3); padding-bottom: 15px;">Mainboard Formfaktor-Vergleich</h2>
-        
-        <div style="display: flex; justify-content: center; margin-bottom: 30px;">
-            <svg id="formfactor-svg" width="800" height="500" style="max-width: 100%;">
-                <!-- SVG wird durch JavaScript generiert -->
-            </svg>
+    <div style="position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 1000;">
+        <div id="formfaktor-tab" style="background: linear-gradient(90deg, rgba(255, 165, 0, 0.8), rgba(255, 140, 0, 0.6)); color: #fff; padding: 10px 15px; border-radius: 10px; cursor: pointer; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); transition: all 0.2s; font-weight: 500;">
+            Formfaktor-Vergleich
         </div>
-        
-        <div style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 15px;">
-            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #ff8c00;">
-                <h3 style="margin-top: 0; color: #ff8c00;">ATX</h3>
-                <p>12" × 9.6" (30.5 cm × 24.4 cm)</p>
-                <p>Standard für die meisten Desktop-PCs. Bietet gute Erweiterungsmöglichkeiten mit mehreren PCIe-Slots und 4 RAM-Steckplätzen.</p>
+
+        <div id="form-factor-info" style="background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.95)); color: #f0f0f0; padding: 10px 15px; border-radius: 10px; font-size: 14px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);">
+            <a href="https://rog.asus.com/de/motherboards/rog-strix/rog-strix-x370-f-gaming-model/spec/" target="_blank" style="color: #ff8c00; text-decoration: none; transition: color 0.2s;">ASUS ROG STRIX X370-F GAMING Mainboard</a> (ATX Form Faktor: 12 inch × 9.6 inch (30.5 cm × 24.4 cm)
+        </div>
+    </div>
+
+    <div id="formfactor-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 2000; display: none; justify-content: center; align-items: center; overflow: hidden;">
+        <div style="position: relative; width: 90%; max-width: 900px; max-height: 90vh; background: linear-gradient(145deg, rgba(40, 40, 40, 0.95), rgba(25, 25, 25, 0.98)); border-radius: 15px; padding: 30px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); color: #f0f0f0; border: 1px solid rgba(255, 255, 255, 0.1); overflow-y: auto;">
+            <div id="close-formfactor" style="position: sticky; top: 0; float: right; font-size: 24px; cursor: pointer; color: #aaa; transition: color 0.2s; z-index: 10;">&#10006;</div>
+            <h2 style="margin-top: 0; color: #ff8c00; text-align: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255, 165, 0, 0.3); padding-bottom: 15px;">Mainboard Formfaktor-Vergleich</h2>
+
+            <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+                <svg id="formfactor-svg" width="800" height="500" style="max-width: 100%;">
+                    </svg>
             </div>
-            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #4682B4;">
-                <h3 style="margin-top: 0; color: #4682B4;">Micro-ATX</h3>
-                <p>9.6" × 9.6" (24.4 cm × 24.4 cm)</p>
-                <p>Kompakter als ATX, aber mit ähnlichen Funktionen. Hat typischerweise weniger Erweiterungssteckplätze.</p>
-            </div>
-            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #32CD32;">
-                <h3 style="margin-top: 0; color: #32CD32;">Mini-ITX</h3>
-                <p>6.7" × 6.7" (17 cm × 17 cm)</p>
-                <p>Sehr kompaktes Format für kleine PC-Gehäuse. Meist nur ein PCIe-Slot und 2 RAM-Steckplätze.</p>
-            </div>
-            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #9370DB;">
-                <h3 style="margin-top: 0; color: #9370DB;">E-ATX</h3>
-                <p>12" × 13" (30.5 cm × 33 cm)</p>
-                <p>Erweitertes ATX-Format für High-End-Systeme mit zusätzlichen Erweiterungsmöglichkeiten und Features.</p>
-            </div>
-            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #FF6347;">
-                <h3 style="margin-top: 0; color: #FF6347;">Dual Sockel</h3>
-                <p>13" × 14" (33 cm × 35.6 cm) oder größer</p>
-                <p>Für Workstations und Server mit zwei CPU-Sockeln. Sehr große Boards mit vielen Erweiterungsmöglichkeiten.</p>
-            </div>
-            <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #FFD700;">
-                <h3 style="margin-top: 0; color: #FFD700;">Notebook</h3>
-                <p>~ 8" × 5" (20.3 cm × 12.7 cm) variiert stark</p>
-                <p>Speziell für Laptops entwickelt. Stark integrierte Komponenten mit wenig Erweiterungsmöglichkeiten.</p>
+
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 15px;">
+                 <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #ff8c00;">
+                     <h3 style="margin-top: 0; color: #ff8c00;">ATX</h3>
+                     <p>12" × 9.6" (30.5 cm × 24.4 cm)</p>
+                     <p>Standard für die meisten Desktop-PCs. Bietet gute Erweiterungsmöglichkeiten mit mehreren PCIe-Slots und 4 RAM-Steckplätzen.</p>
+                 </div>
+                 <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #4682B4;">
+                     <h3 style="margin-top: 0; color: #4682B4;">Micro-ATX</h3>
+                     <p>9.6" × 9.6" (24.4 cm × 24.4 cm)</p>
+                     <p>Kompakter als ATX, aber mit ähnlichen Funktionen. Hat typischerweise weniger Erweiterungssteckplätze.</p>
+                 </div>
+                 <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #32CD32;">
+                     <h3 style="margin-top: 0; color: #32CD32;">Mini-ITX</h3>
+                     <p>6.7" × 6.7" (17 cm × 17 cm)</p>
+                     <p>Sehr kompaktes Format für kleine PC-Gehäuse. Meist nur ein PCIe-Slot und 2 RAM-Steckplätze.</p>
+                 </div>
+                 <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #9370DB;">
+                     <h3 style="margin-top: 0; color: #9370DB;">E-ATX</h3>
+                     <p>12" × 13" (30.5 cm × 33 cm)</p>
+                     <p>Erweitertes ATX-Format für High-End-Systeme mit zusätzlichen Erweiterungsmöglichkeiten und Features.</p>
+                 </div>
+                 <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #FF6347;">
+                     <h3 style="margin-top: 0; color: #FF6347;">Dual Sockel</h3>
+                     <p>13" × 14" (33 cm × 35.6 cm) oder größer</p>
+                     <p>Für Workstations und Server mit zwei CPU-Sockeln. Sehr große Boards mit vielen Erweiterungsmöglichkeiten.</p>
+                 </div>
+                 <div class="formfactor-card" style="background: rgba(60, 60, 60, 0.5); padding: 15px; border-radius: 10px; width: calc(33% - 15px); min-width: 250px; margin-bottom: 15px; border-left: 3px solid #FFD700;">
+                     <h3 style="margin-top: 0; color: #FFD700;">Notebook</h3>
+                     <p>~ 8" × 5" (20.3 cm × 12.7 cm) variiert stark</p>
+                     <p>Speziell für Laptops entwickelt. Stark integrierte Komponenten mit wenig Erweiterungsmöglichkeiten.</p>
+                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-
-// Quiz-Funktion für Übungsaufgaben
-document.addEventListener('DOMContentLoaded', function() {
-    const exercisesButton = document.getElementById('exercises-button');
-    const exercisesSection = document.getElementById('exercises-section');
-    const backButton = document.getElementById('back-button');
-    const checkAnswersButton = document.getElementById('check-answers');
-    
-    if (exercisesButton) {
-        exercisesButton.addEventListener('click', function() {
-            // Hide 3D view elements
-            document.querySelector('canvas').style.display = 'none';
-            document.getElementById('sidebar').style.display = 'none';
-            document.getElementById('info').style.display = 'none';
-            document.getElementById('exercises-nav').style.display = 'none';
-            document.getElementById('formfaktor-tab').style.display = 'none';
-            document.getElementById('form-factor-info').style.display = 'none';
-            
-            // Show exercises
-            exercisesSection.style.display = 'block';
-        });
-    }
-    
-    if (backButton) {
-        backButton.addEventListener('click', function() {
-            // Show 3D view elements
-            document.querySelector('canvas').style.display = 'block';
-            document.getElementById('sidebar').style.display = 'block';
-            document.getElementById('info').style.display = 'block';
-            document.getElementById('exercises-nav').style.display = 'block';
-            document.getElementById('formfaktor-tab').style.display = 'block';
-            document.getElementById('form-factor-info').style.display = 'block';
-            
-            // Hide exercises
-            exercisesSection.style.display = 'none';
-            
-            // Reset feedback
-            document.querySelectorAll('.feedback').forEach(el => {
-                el.textContent = '';
-                el.className = 'feedback';
-            });
-        });
-    }
-    
-    // Check answers functionality
-    if (checkAnswersButton) {
-        checkAnswersButton.addEventListener('click', function() {
-            // Define correct answers
-            const correctAnswers = {
-                q1: 'true',
-                q2: 'c',
-                q3: 'true',
-                q4: 'c',
-                q5: 'c'
-            };
-            
-            // Check each question
-            for (let question in correctAnswers) {
-                const selectedOption = document.querySelector(`input[name="${question}"]:checked`);
-                const feedbackElement = document.getElementById(`feedback-${question}`);
-                
-                if (!selectedOption) {
-                    feedbackElement.textContent = 'Bitte wählen Sie eine Antwort aus.';
-                    feedbackElement.className = 'feedback incorrect';
-                    continue;
-                }
-                
-                if (selectedOption.value === correctAnswers[question]) {
-                    feedbackElement.textContent = 'Richtig!';
-                    feedbackElement.className = 'feedback correct';
-                } else {
-                    feedbackElement.textContent = 'Falsch. Bitte versuchen Sie es erneut.';
-                    feedbackElement.className = 'feedback incorrect';
-                }
-            }
-        });
-    }
-});
-
-
-
-    // Sofortige Ausführung des Codes ohne DOMContentLoaded zu warten
-    (function() {
-        // Direktes Hinzufügen der Event-Listener
-        const formfactorTab = document.getElementById('formfaktor-tab');
-        const formfactorOverlay = document.getElementById('formfactor-overlay');
-        const closeFormfactor = document.getElementById('close-formfactor');
-        
-        if (formfactorTab) {
-            formfactorTab.onclick = function() {
-                if (formfactorOverlay) {
-                    formfactorOverlay.style.display = 'flex';
-                    drawFormfactorComparison();
-                }
-            };
-            
-            // Hover-Effekte
-            formfactorTab.onmouseenter = function() {
-                this.style.transform = 'translateY(-3px)';
-                this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.3)';
-            };
-            
-            formfactorTab.onmouseleave = function() {
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.3)';
-            };
-        }
-        
-        if (closeFormfactor) {
-            closeFormfactor.onclick = function() {
-                if (formfactorOverlay) {
-                    formfactorOverlay.style.display = 'none';
-                }
-            };
-        }
-        
-        // ESC-Taste schließt das Overlay
-        document.onkeydown = function(e) {
-            if (e.key === 'Escape' && formfactorOverlay && formfactorOverlay.style.display === 'flex') {
-                formfactorOverlay.style.display = 'none';
-            }
-        };
-        
-        // Klick außerhalb des Overlays schließt es
-        if (formfactorOverlay) {
-            formfactorOverlay.onclick = function(e) {
-                if (e.target === this) {
-                    this.style.display = 'none';
-                }
-            };
-        }
-        
-        // Größenanpassung bei Fensteränderung
-        window.onresize = function() {
-            if (formfactorOverlay && formfactorOverlay.style.display === 'flex') {
-                drawFormfactorComparison();
-            }
-        };
-        
-        // Führe auch DOMContentLoaded-Setup für Abwärtskompatibilität durch
-        document.addEventListener('DOMContentLoaded', function() {
-            // Falls die direkten Bindungen nicht funktioniert haben
+    <script>
+        // Sofortige Ausführung des Codes ohne DOMContentLoaded zu warten
+        (function() {
+            // Direktes Hinzufügen der Event-Listener
             const formfactorTab = document.getElementById('formfaktor-tab');
             const formfactorOverlay = document.getElementById('formfactor-overlay');
             const closeFormfactor = document.getElementById('close-formfactor');
-            
+
             if (formfactorTab) {
-                formfactorTab.addEventListener('click', function() {
+                formfactorTab.onclick = function() {
                     if (formfactorOverlay) {
                         formfactorOverlay.style.display = 'flex';
                         drawFormfactorComparison();
                     }
-                });
-                
-                formfactorTab.addEventListener('mouseenter', function() {
+                };
+
+                // Hover-Effekte
+                formfactorTab.onmouseenter = function() {
                     this.style.transform = 'translateY(-3px)';
                     this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.3)';
-                });
-                
-                formfactorTab.addEventListener('mouseleave', function() {
+                };
+
+                formfactorTab.onmouseleave = function() {
                     this.style.transform = 'translateY(0)';
                     this.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.3)';
-                });
+                };
             }
-            
+
             if (closeFormfactor) {
-                closeFormfactor.addEventListener('click', function() {
+                closeFormfactor.onclick = function() {
                     if (formfactorOverlay) {
                         formfactorOverlay.style.display = 'none';
                     }
-                });
+                };
             }
-        });
-    })();
 
-    // Formfaktor SVG zeichnen - Verbesserte Version
-    function drawFormfactorComparison() {
-    // Formfaktor-Daten (Breite, Höhe in cm)
-    const formfactors = [
-        { name: "Dual Sockel", width: 33, height: 35.6, color: "#FF6347" },
-        { name: "E-ATX", width: 30.5, height: 33, color: "#9370DB" },
-        { name: "ATX", width: 30.5, height: 24.4, color: "#ff8c00" },
-        { name: "Micro-ATX", width: 24.4, height: 24.4, color: "#4682B4" },
-        { name: "Mini-ITX", width: 17, height: 17, color: "#32CD32" },
-        { name: "Notebook", width: 20.3, height: 12.7, color: "#FFD700" }
-    ];
+            // ESC-Taste schließt das Overlay
+            document.onkeydown = function(e) {
+                if (e.key === 'Escape' && formfactorOverlay && formfactorOverlay.style.display === 'flex') {
+                    formfactorOverlay.style.display = 'none';
+                }
+            };
 
-    const svg = document.getElementById('formfactor-svg');
-    if (!svg) {
-        console.error('SVG-Element nicht gefunden');
-        return;
-    }
+            // Klick außerhalb des Overlays schließt es
+            if (formfactorOverlay) {
+                formfactorOverlay.onclick = function(e) {
+                    if (e.target === this) {
+                        this.style.display = 'none';
+                    }
+                };
+            }
 
-    svg.innerHTML = ''; // Clear previous content
+            // Größenanpassung bei Fensteränderung
+            window.onresize = function() {
+                if (formfactorOverlay && formfactorOverlay.style.display === 'flex') {
+                    drawFormfactorComparison();
+                }
+            };
 
-    // Scale factor für bessere Darstellung
-    const scale = 10;
-    const padding = 120; // Mehr Padding für Textbeschriftungen
-    const maxWidth = Math.max(...formfactors.map(f => f.width)) * scale + padding * 2;
-    const maxHeight = Math.max(...formfactors.map(f => f.height)) * scale + padding * 2;
+            // Führe auch DOMContentLoaded-Setup für Abwärtskompatibilität durch
+            document.addEventListener('DOMContentLoaded', function() {
+                // Falls die direkten Bindungen nicht funktioniert haben
+                const formfactorTab = document.getElementById('formfaktor-tab');
+                const formfactorOverlay = document.getElementById('formfactor-overlay');
+                const closeFormfactor = document.getElementById('close-formfactor');
 
-    svg.setAttribute('viewBox', `0 0 ${maxWidth} ${maxHeight}`);
+                if (formfactorTab && !formfactorTab.onclick) { // Nur hinzufügen, wenn noch kein Handler existiert
+                    formfactorTab.addEventListener('click', function() {
+                        if (formfactorOverlay) {
+                            formfactorOverlay.style.display = 'flex';
+                            drawFormfactorComparison();
+                        }
+                    });
 
-    // Zentrierte Positionierung
-    const centerX = maxWidth / 2;
-    const centerY = maxHeight / 2;
+                    formfactorTab.addEventListener('mouseenter', function() {
+                        this.style.transform = 'translateY(-3px)';
+                        this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.3)';
+                    });
 
-    // Neue Textversatz-Positionen - Links neben den Visualisierungen
-    const textOffsets = {
-        "Dual Sockel": { x: -380, y: -0 },
-        "E-ATX": { x: -380, y: -50 },
-        "ATX": { x: -380, y: -100 },
-        "Micro-ATX": { x: -380, y: -150 },
-        "Mini-ITX": { x: -380, y: -200 },
-        "Notebook": { x: -380, y: -250 }
-    };
+                    formfactorTab.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.3)';
+                    });
+                }
 
-    try {
-        // Zeichne von größtem zu kleinstem, um Überlappung zu vermeiden
-        formfactors.forEach(ff => {
-            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            const x = centerX - (ff.width * scale / 2);
-            const y = centerY - (ff.height * scale / 2);
-            
-            rect.setAttribute('x', x);
-            rect.setAttribute('y', y);
-            rect.setAttribute('width', ff.width * scale);
-            rect.setAttribute('height', ff.height * scale);
-            rect.setAttribute('stroke', ff.color);
-            rect.setAttribute('stroke-width', '3');
-            rect.setAttribute('fill', ff.color + '20'); // Transparente Füllung
-            rect.setAttribute('rx', '5'); // Abgerundete Ecken
-            svg.appendChild(rect);
+                if (closeFormfactor && !closeFormfactor.onclick) { // Nur hinzufügen, wenn noch kein Handler existiert
+                    closeFormfactor.addEventListener('click', function() {
+                        if (formfactorOverlay) {
+                            formfactorOverlay.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        })();
 
-            // Labels links von den Visualisierungen
-            const textX = centerX + textOffsets[ff.name].x;
-            const textY = centerY + textOffsets[ff.name].y;
-            
-            // Hintergrund für bessere Lesbarkeit
-            const textBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            textBg.setAttribute('x', textX - 60);
-            textBg.setAttribute('y', textY - 18);
-            textBg.setAttribute('width', 120);
-            textBg.setAttribute('height', 40);
-            textBg.setAttribute('fill', 'rgba(40, 40, 40, 0.7)');
-            textBg.setAttribute('rx', '4');
-            svg.appendChild(textBg);
+         // Formfaktor SVG zeichnen - Verbesserte Version
+         function drawFormfactorComparison() {
+             const formfactors = [
+                 { name: "Dual Sockel", width: 33, height: 35.6, color: "#FF6347" },
+                 { name: "E-ATX", width: 30.5, height: 33, color: "#9370DB" },
+                 { name: "ATX", width: 30.5, height: 24.4, color: "#ff8c00" },
+                 { name: "Micro-ATX", width: 24.4, height: 24.4, color: "#4682B4" },
+                 { name: "Mini-ITX", width: 17, height: 17, color: "#32CD32" },
+                 { name: "Notebook", width: 20.3, height: 12.7, color: "#FFD700" }
+             ];
 
-            // Name
-            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            text.setAttribute('x', textX);
-            text.setAttribute('y', textY);
-            text.setAttribute('text-anchor', 'middle');
-            text.setAttribute('fill', ff.color);
-            text.setAttribute('font-weight', 'bold');
-            text.setAttribute('font-size', '14px');
-            text.textContent = ff.name;
-            svg.appendChild(text);
+             const svg = document.getElementById('formfactor-svg');
+             if (!svg) {
+                 console.error('SVG-Element nicht gefunden');
+                 return;
+             }
 
-            const dimensions = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            dimensions.setAttribute('x', textX);
-            dimensions.setAttribute('y', textY + 20);
-            dimensions.setAttribute('text-anchor', 'middle');
-            dimensions.setAttribute('fill', '#ffffff');
-            dimensions.setAttribute('font-size', '12px');
-            dimensions.textContent = `${ff.width} × ${ff.height} cm`;
-            svg.appendChild(dimensions);
-        });
+             svg.innerHTML = ''; // Clear previous content
 
-        // **Hinzufügen des Hyperlinks**:
-        const link = document.createElementNS("http://www.w3.org/2000/svg", "a");
-        link.setAttribute("href", "https://www.wired.com/story/motherboard-size-explainer/");
-        link.setAttribute("target", "_blank"); // Öffnet den Link in einem neuen Tab
+             const scale = 10;
+             const padding = 120;
+             const maxWidth = Math.max(...formfactors.map(f => f.width)) * scale + padding * 2;
+             const maxHeight = Math.max(...formfactors.map(f => f.height)) * scale + padding * 2;
 
-        const legendY = maxHeight - 15;
-        const legendX = maxWidth / 2;
+             svg.setAttribute('viewBox', `0 0 ${maxWidth} ${maxHeight}`);
 
-        const legend = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        legend.setAttribute("x", legendX);
-        legend.setAttribute("y", legendY);
-        legend.setAttribute("text-anchor", "middle");
-        legend.setAttribute("fill", "#FFD700"); // Goldene Farbe für bessere Sichtbarkeit
-        legend.setAttribute("font-size", "20px");
-        legend.setAttribute("cursor", "pointer"); // Mauszeiger als Hand anzeigen
-        legend.textContent = "Ausführlicher Beitrag zu Formfaktoren (englisch) <- Klick";
+             const centerX = maxWidth / 2;
+             const centerY = maxHeight / 2;
 
-        // Den Text in den Link einfügen
-        link.appendChild(legend);
+             const textOffsets = {
+                 "Dual Sockel": { x: -380, y: -0 },
+                 "E-ATX": { x: -380, y: -50 },
+                 "ATX": { x: -380, y: -100 },
+                 "Micro-ATX": { x: -380, y: -150 },
+                 "Mini-ITX": { x: -380, y: -200 },
+                 "Notebook": { x: -380, y: -250 }
+             };
 
-        // Den Link in das SVG einfügen
-        svg.appendChild(link);
+             try {
+                 formfactors.forEach(ff => {
+                     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                     const x = centerX - (ff.width * scale / 2);
+                     const y = centerY - (ff.height * scale / 2);
 
-    } catch (error) {
-        console.error('Fehler beim Zeichnen des SVG:', error);
-    }
-}
-</script>
+                     rect.setAttribute('x', x);
+                     rect.setAttribute('y', y);
+                     rect.setAttribute('width', ff.width * scale);
+                     rect.setAttribute('height', ff.height * scale);
+                     rect.setAttribute('stroke', ff.color);
+                     rect.setAttribute('stroke-width', '3');
+                     rect.setAttribute('fill', ff.color + '20');
+                     rect.setAttribute('rx', '5');
+                     svg.appendChild(rect);
 
-   <!-- Übungsaufgaben Button oben -->
-   <div id="exercises-nav" style="position: fixed; top: 0; left: 242px; background: linear-gradient(180deg, rgba(35, 35, 35, 0.95), rgba(25, 25, 25, 0.95)); padding: 10px 20px; border-radius: 0 0 10px 0; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); z-index: 1001; border: 1px solid rgba(255, 255, 255, 0.05);">
-    <div id="exercises-button" style="padding: 12px 15px; background: linear-gradient(90deg, rgba(70, 70, 70, 0.7), rgba(50, 50, 50, 0.7)); border-radius: 8px; cursor: pointer; text-align: center; color: #f0f0f0; transition: all 0.2s; font-weight: 500; border: 1px solid rgba(255, 255, 255, 0.1);">
-        Übungsaufgaben
+                     const textX = centerX + textOffsets[ff.name].x;
+                     const textY = centerY + textOffsets[ff.name].y;
+
+                     const textBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                     textBg.setAttribute('x', textX - 60);
+                     textBg.setAttribute('y', textY - 18);
+                     textBg.setAttribute('width', 120);
+                     textBg.setAttribute('height', 40);
+                     textBg.setAttribute('fill', 'rgba(40, 40, 40, 0.7)');
+                     textBg.setAttribute('rx', '4');
+                     svg.appendChild(textBg);
+
+                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                     text.setAttribute('x', textX);
+                     text.setAttribute('y', textY);
+                     text.setAttribute('text-anchor', 'middle');
+                     text.setAttribute('fill', ff.color);
+                     text.setAttribute('font-weight', 'bold');
+                     text.setAttribute('font-size', '14px');
+                     text.textContent = ff.name;
+                     svg.appendChild(text);
+
+                     const dimensions = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                     dimensions.setAttribute('x', textX);
+                     dimensions.setAttribute('y', textY + 20);
+                     dimensions.setAttribute('text-anchor', 'middle');
+                     dimensions.setAttribute('fill', '#ffffff');
+                     dimensions.setAttribute('font-size', '12px');
+                     dimensions.textContent = `${ff.width} × ${ff.height} cm`;
+                     svg.appendChild(dimensions);
+                 });
+
+                 const link = document.createElementNS("http://www.w3.org/2000/svg", "a");
+                 link.setAttribute("href", "https://www.wired.com/story/motherboard-size-explainer/");
+                 link.setAttribute("target", "_blank");
+
+                 const legendY = maxHeight - 15;
+                 const legendX = maxWidth / 2;
+
+                 const legend = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                 legend.setAttribute("x", legendX);
+                 legend.setAttribute("y", legendY);
+                 legend.setAttribute("text-anchor", "middle");
+                 legend.setAttribute("fill", "#FFD700");
+                 legend.setAttribute("font-size", "20px");
+                 legend.setAttribute("cursor", "pointer");
+                 legend.textContent = "Ausführlicher Beitrag zu Formfaktoren (englisch) <- Klick";
+
+                 link.appendChild(legend);
+                 svg.appendChild(link);
+
+             } catch (error) {
+                 console.error('Fehler beim Zeichnen des SVG:', error);
+             }
+         }
+    </script>
+
+    <div id="exercises-nav" style="position: fixed; top: 0; left: 242px; background: linear-gradient(180deg, rgba(35, 35, 35, 0.95), rgba(25, 25, 25, 0.95)); padding: 10px 20px; border-radius: 0 0 10px 0; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); z-index: 1001; border: 1px solid rgba(255, 255, 255, 0.05);">
+        <div id="exercises-button" style="padding: 12px 15px; background: linear-gradient(90deg, rgba(70, 70, 70, 0.7), rgba(50, 50, 50, 0.7)); border-radius: 8px; cursor: pointer; text-align: center; color: #f0f0f0; transition: all 0.2s; font-weight: 500; border: 1px solid rgba(255, 255, 255, 0.1);">
+            Übungsaufgaben
+        </div>
     </div>
-</div>
-
-    <div id="info">
-</div>
-       
-        </script>
-        </body>
+</body>
 </html>
